@@ -29,7 +29,7 @@ public class WordleBot {
      *    guess -> groups
      *    Best (next) guess is the one with smallest numGroups and largest groupSize
      * */
-    public String nextGuess(List<LetterGuess> previousGuess) {
+    public String nextGuess(List<Guess> previousGuess) {
         if (previousGuess == null || previousGuess.isEmpty()) {
             return "slate";
         }
@@ -70,7 +70,7 @@ public class WordleBot {
         words.forEach(nextGuess -> {
             Map<List<GuessResult>, Integer> patternCounts = new HashMap<>();
             words.forEach(possibleSolution -> {
-                List<GuessResult> guessResults = calculateWordGuess(nextGuess, possibleSolution);
+                List<GuessResult> guessResults = calculateGuessResult(nextGuess, possibleSolution);
                 patternCounts.merge(guessResults, 1, Integer::sum);
             });
             patternCountsByWord.put(nextGuess, patternCounts);
@@ -78,18 +78,18 @@ public class WordleBot {
         return patternCountsByWord;
     }
 
-    List<LetterGuess> calculateLetterGuess(String guessWord, String solutionWord) {
-        List<GuessResult> guessResults = calculateWordGuess(guessWord, solutionWord);
-        List<LetterGuess> letterGuesses = new ArrayList<>();
+    List<Guess> calculateGuess(String guessWord, String solutionWord) {
+        List<GuessResult> guessResults = calculateGuessResult(guessWord, solutionWord);
+        List<Guess> guesses = new ArrayList<>();
         for (int i = 0; i < guessResults.size(); i++) {
             GuessResult guessResult = guessResults.get(i);
             Character c = guessWord.charAt(i);
-            letterGuesses.add(new LetterGuess(c, guessResult));
+            guesses.add(new Guess(c, guessResult));
         }
-        return letterGuesses;
+        return guesses;
     }
 
-    List<GuessResult> calculateWordGuess(String guessWord, String solutionWord) {
+    List<GuessResult> calculateGuessResult(String guessWord, String solutionWord) {
         assert guessWord.length() == solutionWord.length();
         List<Character> guess = Utils.stringToCharList(guessWord);
         List<Character> solution = Utils.stringToCharList(solutionWord);
@@ -114,7 +114,7 @@ public class WordleBot {
      *   2. it contains non-existing letters
      *   3. it does not contain existing letters
      * */
-    void eliminateWords(List<LetterGuess> previousGuess) {
+    void eliminateWords(List<Guess> previousGuess) {
         Set<Integer> nonExistingLetters = previousGuess
             .stream()
             .filter(guess -> guess.guessResult == GuessResult.NotExists)

@@ -32,12 +32,12 @@ public class WordleBotTest {
     @Test
     void eliminateWords_works() throws IOException {
         WordleBot bot = new WordleBot("test-eliminate-words.txt");
-        List<LetterGuess> guesses = new ArrayList<>(
-            List.of(new LetterGuess('s', GuessResult.CorrectPosition),
-                new LetterGuess('t', GuessResult.WrongPosition),
-                new LetterGuess('a', GuessResult.CorrectPosition),
-                new LetterGuess('l', GuessResult.NotExists),
-                new LetterGuess('e', GuessResult.CorrectPosition)));
+        List<Guess> guesses = new ArrayList<>(
+            List.of(new Guess('s', GuessResult.CorrectPosition),
+                new Guess('t', GuessResult.WrongPosition),
+                new Guess('a', GuessResult.CorrectPosition),
+                new Guess('l', GuessResult.NotExists),
+                new Guess('e', GuessResult.CorrectPosition)));
         bot.eliminateWords(guesses);
         List<String> words = bot.words;
         assertFalse(words.isEmpty(), "Expected words to have at least one word");
@@ -46,11 +46,11 @@ public class WordleBotTest {
     }
 
     @Test
-    void calculateWordGuess_works() throws IOException {
+    void calculateGuess_Result_works() throws IOException {
         WordleBot bot = new WordleBot("test-words.txt");
         String guess = "slate";
         String solution = "story";
-        List<GuessResult> result = bot.calculateWordGuess(guess, solution);
+        List<GuessResult> result = bot.calculateGuessResult(guess, solution);
         assertEquals(result,
             List.of(GuessResult.CorrectPosition, GuessResult.NotExists, GuessResult.NotExists,
                 GuessResult.WrongPosition, GuessResult.NotExists));

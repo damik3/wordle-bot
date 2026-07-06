@@ -7,7 +7,7 @@ import java.util.Objects;
 
 public class Main {
     public static void main(String[] args) throws IOException {
-        String wordle = "adieu";
+        String wordle = "party";
         GameResult result = play(wordle);
         if (result.solved)
             System.out.println("Wordle at " + result.steps + "!");
@@ -21,13 +21,13 @@ public class Main {
 
         int attempt = 0;
         String guess = null;
-        List<LetterGuess> previousGuessResult = new ArrayList<>();
+        List<Guess> guessResult = new ArrayList<>();
 
         while (attempt < maxNumberOfGuesses && !Objects.equals(guess, wordle)) {
-            guess = bot.nextGuess(previousGuessResult);
+            guess = bot.nextGuess(guessResult);
             System.out.println("Guess: " + guess);
-            previousGuessResult = bot.calculateLetterGuess(guess, wordle);
-            System.out.println("previousGuessResult: " + previousGuessResult);
+            guessResult = bot.calculateGuess(guess, wordle);
+            System.out.println("previousGuessResult: " + guessResult);
             attempt++;
         }
 
