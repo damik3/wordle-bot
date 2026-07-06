@@ -14,7 +14,7 @@ public class WordleBotTest {
     @Test
     void parseWordsFile_loadsWordsFromResourceAndNormalizesThem() throws Exception {
         WordleBot bot = new WordleBot("test-parse-words-file.txt");
-        List<String> words = bot.words;
+        List<String> words = bot.possibleSolutions;
         assertFalse(words.isEmpty(), "Expected words.txt to provide at least one word");
         assertEquals(3, words.size());
         assertEquals("rossa", words.get(0));
@@ -39,7 +39,7 @@ public class WordleBotTest {
                 new Guess('l', GuessResult.NotExists),
                 new Guess('e', GuessResult.CorrectPosition)));
         bot.eliminateWords(guesses);
-        List<String> words = bot.words;
+        List<String> words = bot.possibleSolutions;
         assertFalse(words.isEmpty(), "Expected words to have at least one word");
         assertEquals(2, words.size());
         assertLinesMatch(words, List.of("skate", "snate"));
@@ -65,13 +65,13 @@ public class WordleBotTest {
     }
 
     @Test
-    void nextBestGuess_works() throws IOException {
+    void calculateNextBestGuess_works() throws IOException {
         WordleBot bot = new WordleBot("calculate-pattern-counts.txt");
         Map<String, Map<List<GuessResult>, Integer>> patternCountsByWord =
             bot.calculatePatternCounts();
         Map<String, Stats> statsByWord = bot.calculateStatsByWord(patternCountsByWord);
         System.out.println(statsByWord);
-        String guess = bot.nextBestGuess(statsByWord);
+        String guess = bot.calculateNextBestGuess(statsByWord);
         System.out.println(guess);
     }
 

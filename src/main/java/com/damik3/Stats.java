@@ -1,8 +1,8 @@
 package com.damik3;
 
 public class Stats {
-    static Double numberOfGroupsWeight = 0.5;
-    static Double largestGroupWeight = 0.5;
+    static Double numberOfGroupsWeight = 0.66;
+    static Double largestGroupWeight = 0.33;
 
     Integer numberOfGroups;
     Integer largestGroup;

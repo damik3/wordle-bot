@@ -11,14 +11,12 @@ import java.util.stream.Collectors;
 public class WordleBot {
 
     List<String> words;
-
     List<String> possibleSolutions;
-    List<String> validWords;
 
     public WordleBot(String wordsFileName) throws IOException {
-        this.words = parseWordsFile(wordsFileName);
-        this.possibleSolutions = this.words;
-        this.validWords = this.words;
+        List<String> parsedWords = parseWordsFile(wordsFileName);
+        this.words = new ArrayList<>(parsedWords); ;
+        this.possibleSolutions = new ArrayList<>(parsedWords); ;
     }
 
     /*
@@ -36,10 +34,10 @@ public class WordleBot {
         eliminateWords(previousGuess);
         Map<String, Map<List<GuessResult>, Integer>> patternCountsByWord = calculatePatternCounts();
         Map<String, Stats> statsByWord = calculateStatsByWord(patternCountsByWord);
-        return nextBestGuess(statsByWord);
+        return calculateNextBestGuess(statsByWord);
     }
 
-    String nextBestGuess(Map<String, Stats> statsByWord) {
+    String calculateNextBestGuess(Map<String, Stats> statsByWord) {
         List<Map.Entry<String, Stats>> entryList = new ArrayList<>(statsByWord.entrySet());
         entryList.sort(Comparator
             .comparingDouble((Map.Entry<String, Stats> e) -> e.getValue().score)
@@ -69,7 +67,7 @@ public class WordleBot {
         Map<String, Map<List<GuessResult>, Integer>> patternCountsByWord = new HashMap<>();
         words.forEach(nextGuess -> {
             Map<List<GuessResult>, Integer> patternCounts = new HashMap<>();
-            words.forEach(possibleSolution -> {
+            possibleSolutions.forEach(possibleSolution -> {
                 List<GuessResult> guessResults = calculateGuessResult(nextGuess, possibleSolution);
                 patternCounts.merge(guessResults, 1, Integer::sum);
             });
@@ -134,17 +132,20 @@ public class WordleBot {
             .map(g -> g.letter)
             .collect(StringBuilder::new, StringBuilder::append, StringBuilder::append)
             .toString();
+        possibleSolutions.removeIf(word -> word.equals(previousWord));
+        // also remove from words; no reason to guess the same word twice
         words.removeIf(word -> word.equals(previousWord));
 
         // remove if it contains non-existing letters
-        words.removeIf(word -> word
+        possibleSolutions.removeIf(word -> word
             .chars()
             .anyMatch(nonExistingLetters::contains));
 
         // remove if it does not contain existing letters
-        words.removeIf(word -> !existingLetters
+        possibleSolutions.removeIf(word -> !existingLetters
             .stream()
             .allMatch(ch -> word.indexOf(ch) >= 0));
+
     }
 
     List<String> parseWordsFile(String filename) throws IOException {
