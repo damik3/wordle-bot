@@ -33,11 +33,11 @@ public class WordleBotTest {
     void eliminateWords_works() throws IOException {
         WordleBot bot = new WordleBot("test-eliminate-words.txt");
         List<Guess> guesses = new ArrayList<>(
-            List.of(new Guess('s', GuessResult.CorrectPosition),
-                new Guess('t', GuessResult.WrongPosition),
-                new Guess('a', GuessResult.CorrectPosition),
-                new Guess('l', GuessResult.NotExists),
-                new Guess('e', GuessResult.CorrectPosition)));
+            List.of(new Guess('s', 0, GuessResult.CorrectPosition),
+                new Guess('t', 1, GuessResult.WrongPosition),
+                new Guess('a', 2, GuessResult.CorrectPosition),
+                new Guess('l', 3, GuessResult.NotExists),
+                new Guess('e', 4, GuessResult.CorrectPosition)));
         bot.eliminateWords(guesses);
         List<String> words = bot.possibleSolutions;
         assertFalse(words.isEmpty(), "Expected words to have at least one word");
@@ -73,6 +73,116 @@ public class WordleBotTest {
         System.out.println(statsByWord);
         String guess = bot.calculateNextBestGuess(statsByWord);
         System.out.println(guess);
+    }
+
+    @Test
+    void isPreviousGuess_works() throws IOException {
+        WordleBot bot = new WordleBot("test-words.txt");
+        String word = "slate";
+        List<Guess> previousGuess = List.of(
+            new Guess('s', 0, GuessResult.WrongPosition),
+            new Guess('l', 1, GuessResult.CorrectPosition),
+            new Guess('a', 2, GuessResult.NotExists),
+            new Guess('t', 3, GuessResult.NotExists),
+            new Guess('e', 4, GuessResult.NotExists)
+        );
+        assertTrue(bot.isPreviousGuess(word, previousGuess));
+    }
+
+    @Test
+    void containsNonExistingLetters_works() throws IOException {
+        WordleBot bot = new WordleBot("test-words.txt");
+        String word1 = "ffaff";
+        List<Guess> previousGuess1 = List.of(
+            new Guess('a', 0, GuessResult.NotExists),
+            new Guess('b', 1, GuessResult.CorrectPosition),
+            new Guess('c', 2, GuessResult.WrongPosition),
+            new Guess('d', 3, GuessResult.WrongPosition),
+            new Guess('e', 4, GuessResult.WrongPosition)
+        );
+        assertTrue(bot.containsNonExistingLetters(word1, previousGuess1));
+
+        String word2 = "fffff";
+        List<Guess> previousGuess2 = List.of(
+            new Guess('a', 0, GuessResult.NotExists),
+            new Guess('b', 1, GuessResult.CorrectPosition),
+            new Guess('c', 2, GuessResult.WrongPosition),
+            new Guess('d', 3, GuessResult.WrongPosition),
+            new Guess('e', 4, GuessResult.WrongPosition)
+        );
+        assertFalse(bot.containsNonExistingLetters(word2, previousGuess2));
+    }
+
+    @Test
+    void containsExistingLetters_works() throws IOException {
+        WordleBot bot = new WordleBot("test-words.txt");
+        String word1 = "fffbc";
+        List<Guess> previousGuess1 = List.of(
+            new Guess('a', 0, GuessResult.NotExists),
+            new Guess('b', 1, GuessResult.CorrectPosition),
+            new Guess('c', 2, GuessResult.WrongPosition),
+            new Guess('d', 3, GuessResult.NotExists),
+            new Guess('e', 4, GuessResult.NotExists)
+        );
+        assertTrue(bot.containsExistingLetters(word1, previousGuess1));
+
+        String word2 = "fffff";
+        List<Guess> previousGuess2 = List.of(
+            new Guess('a', 0, GuessResult.NotExists),
+            new Guess('b', 1, GuessResult.CorrectPosition),
+            new Guess('c', 2, GuessResult.WrongPosition),
+            new Guess('d', 3, GuessResult.NotExists),
+            new Guess('e', 4, GuessResult.NotExists)
+        );
+        assertFalse(bot.containsExistingLetters(word2, previousGuess2));
+    }
+
+    @Test
+    void correctLettersAreNotInCorrectPosition_works() throws IOException {
+        WordleBot bot = new WordleBot("test-words.txt");
+        String word1 = "bffff";
+        List<Guess> previousGuess1 = List.of(
+            new Guess('a', 0, GuessResult.NotExists),
+            new Guess('b', 1, GuessResult.CorrectPosition),
+            new Guess('c', 2, GuessResult.WrongPosition),
+            new Guess('d', 3, GuessResult.WrongPosition),
+            new Guess('e', 4, GuessResult.WrongPosition)
+        );
+        assertTrue(bot.correctLettersAreNotInCorrectPosition(word1, previousGuess1));
+
+        String word2 = "fbfff";
+        List<Guess> previousGuess2 = List.of(
+            new Guess('a', 0, GuessResult.NotExists),
+            new Guess('b', 1, GuessResult.CorrectPosition),
+            new Guess('c', 2, GuessResult.WrongPosition),
+            new Guess('d', 3, GuessResult.WrongPosition),
+            new Guess('e', 4, GuessResult.WrongPosition)
+        );
+        assertFalse(bot.correctLettersAreNotInCorrectPosition(word2, previousGuess2));
+    }
+
+    @Test
+    void existingLettersAreInWrongPosition_works() throws IOException {
+        WordleBot bot = new WordleBot("test-words.txt");
+        String word1 = "ffffe";
+        List<Guess> previousGuess1 = List.of(
+            new Guess('a', 0, GuessResult.NotExists),
+            new Guess('b', 1, GuessResult.NotExists),
+            new Guess('c', 2, GuessResult.NotExists),
+            new Guess('d', 3, GuessResult.NotExists),
+            new Guess('e', 4, GuessResult.WrongPosition)
+        );
+        assertTrue(bot.existingLettersAreInWrongPosition(word1, previousGuess1));
+
+        String word2 = "fffef";
+        List<Guess> previousGuess2 = List.of(
+            new Guess('a', 0, GuessResult.NotExists),
+            new Guess('b', 1, GuessResult.NotExists),
+            new Guess('c', 2, GuessResult.NotExists),
+            new Guess('d', 3, GuessResult.NotExists),
+            new Guess('e', 4, GuessResult.WrongPosition)
+        );
+        assertFalse(bot.existingLettersAreInWrongPosition(word2, previousGuess2));
     }
 
 }
