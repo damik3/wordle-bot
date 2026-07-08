@@ -7,7 +7,7 @@ import java.util.Objects;
 
 public class Main {
     public static void main(String[] args) throws IOException {
-        String wordle = "toddy";
+        String wordle = "sling";
         GameResult result = play(wordle);
         if (result.solved)
             System.out.println("Wordle at " + result.steps + "!");
@@ -17,7 +17,7 @@ public class Main {
 
     static GameResult play(String wordle) throws IOException {
         int maxNumberOfGuesses = 6;
-        WordleBot bot = new WordleBot("words.txt");
+        WordleBot bot = new WordleBot("ny-times-words.txt");
 
         int attempt = 0;
         String guess = null;

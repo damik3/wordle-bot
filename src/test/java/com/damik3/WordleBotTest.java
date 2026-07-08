@@ -185,4 +185,47 @@ public class WordleBotTest {
         assertFalse(bot.existingLettersAreInWrongPosition(word2, previousGuess2));
     }
 
+    @Test
+    void play() throws IOException {
+        WordleBot bot = new WordleBot("ny-times-words.txt");
+        String guess = null;
+        List<Guess> guessResult = new ArrayList<>();
+
+        guess = bot.nextGuess(guessResult);
+        System.out.println("Guess: " + guess);
+        guessResult = new ArrayList<>(
+            List.of(
+                new Guess('s', 0, GuessResult.NotExists),
+                new Guess('l', 1, GuessResult.NotExists),
+                new Guess('a', 2, GuessResult.NotExists),
+                new Guess('t', 3, GuessResult.WrongPosition),
+                new Guess('e', 4, GuessResult.NotExists)
+            )
+        );
+        guess = bot.nextGuess(guessResult);
+        System.out.println("Guess: " + guess);
+        guessResult = new ArrayList<>(
+            List.of(
+                new Guess('p', 0, GuessResult.NotExists),
+                new Guess('o', 1, GuessResult.NotExists),
+                new Guess('i', 2, GuessResult.WrongPosition),
+                new Guess('n', 3, GuessResult.NotExists),
+                new Guess('t', 4, GuessResult.CorrectPosition)
+            )
+        );
+        guess = bot.nextGuess(guessResult);
+        System.out.println("Guess: " + guess);
+        guessResult = new ArrayList<>(
+            List.of(
+                new Guess('m', 0, GuessResult.NotExists),
+                new Guess('u', 1, GuessResult.WrongPosition),
+                new Guess('c', 2, GuessResult.NotExists),
+                new Guess('i', 3, GuessResult.CorrectPosition),
+                new Guess('d', 4, GuessResult.NotExists)
+            )
+        );
+        guess = bot.nextGuess(guessResult);
+        System.out.println("Guess: " + guess);;
+    }
+
 }

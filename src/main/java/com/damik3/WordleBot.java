@@ -126,7 +126,7 @@ public class WordleBot {
 
         possibleSolutions.removeIf(word -> existingLettersAreInWrongPosition(word, previousGuess));
 
-
+        System.out.println("Possible Solutions: " + possibleSolutions.size());
     }
 
     boolean isPreviousGuess(String word, List<Guess> previousGuess) {
