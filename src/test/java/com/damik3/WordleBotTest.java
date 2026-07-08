@@ -187,7 +187,7 @@ public class WordleBotTest {
 
     @Test
     void play() throws IOException {
-        WordleBot bot = new WordleBot("ny-times-words.txt");
+        WordleBot bot = new WordleBot("words.txt");
         String guess = null;
         List<Guess> guessResult = new ArrayList<>();
 
@@ -197,7 +197,7 @@ public class WordleBotTest {
             List.of(
                 new Guess('s', 0, GuessResult.NotExists),
                 new Guess('l', 1, GuessResult.NotExists),
-                new Guess('a', 2, GuessResult.NotExists),
+                new Guess('a', 2, GuessResult.WrongPosition),
                 new Guess('t', 3, GuessResult.WrongPosition),
                 new Guess('e', 4, GuessResult.NotExists)
             )
@@ -206,26 +206,27 @@ public class WordleBotTest {
         System.out.println("Guess: " + guess);
         guessResult = new ArrayList<>(
             List.of(
-                new Guess('p', 0, GuessResult.NotExists),
-                new Guess('o', 1, GuessResult.NotExists),
-                new Guess('i', 2, GuessResult.WrongPosition),
-                new Guess('n', 3, GuessResult.NotExists),
-                new Guess('t', 4, GuessResult.CorrectPosition)
+                new Guess('t', 0, GuessResult.WrongPosition),
+                new Guess('a', 1, GuessResult.CorrectPosition),
+                new Guess('c', 2, GuessResult.WrongPosition),
+                new Guess('i', 3, GuessResult.NotExists),
+                new Guess('t', 4, GuessResult.WrongPosition)
             )
         );
         guess = bot.nextGuess(guessResult);
         System.out.println("Guess: " + guess);
         guessResult = new ArrayList<>(
             List.of(
-                new Guess('m', 0, GuessResult.NotExists),
-                new Guess('u', 1, GuessResult.WrongPosition),
-                new Guess('c', 2, GuessResult.NotExists),
-                new Guess('i', 3, GuessResult.CorrectPosition),
-                new Guess('d', 4, GuessResult.NotExists)
+                new Guess('w', 0, GuessResult.NotExists),
+                new Guess('o', 1, GuessResult.NotExists),
+                new Guess('m', 2, GuessResult.NotExists),
+                new Guess('b', 3, GuessResult.WrongPosition),
+                new Guess('s', 4, GuessResult.NotExists)
             )
         );
         guess = bot.nextGuess(guessResult);
-        System.out.println("Guess: " + guess);;
+        System.out.println("Guess: " + guess);
+
     }
 
 }

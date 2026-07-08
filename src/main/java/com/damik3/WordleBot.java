@@ -14,14 +14,21 @@ public class WordleBot {
     List<String> possibleSolutions;
 
     public WordleBot(String wordsFileName) throws IOException {
-        List<String> parsedWords = parseWordsFile(wordsFileName);
-        this.words = new ArrayList<>(parsedWords);
-        this.possibleSolutions = new ArrayList<>(parsedWords);
+        List<Word> words = parseWords(wordsFileName);
+        this.words = words
+            .stream()
+            .map(w -> w.word)
+            .collect(Collectors.toList());
+        this.possibleSolutions = words
+            .stream()
+            .filter(w -> w.prior > 0)
+            .map(w -> w.word)
+            .collect(Collectors.toList());
     }
 
     /*
      * 1. Eliminate words based on guess result
-     * 2. For each remaining guess
+     * 2. For each word
      *      For each possible solution
      *          Calculate pattern
      *    guess -> groups
@@ -175,25 +182,23 @@ public class WordleBot {
             .allMatch(guess -> word.charAt(guess.index) != guess.letter);
     }
 
-    List<String> parseWordsFile(String filename) throws IOException {
+    List<Word> parseWords(String filename) throws IOException {
         InputStream inputStream = getClass()
             .getClassLoader()
             .getResourceAsStream(filename);
         if (inputStream == null) {
             throw new RuntimeException("File not found: " + filename);
         }
-        List<String> words = new ArrayList<>();
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream))) {
-            String line;
-            while ((line = reader.readLine()) != null) {
-                String word = line
+            return reader
+                .lines()
+                .skip(1) // Skip header
+                .filter(line -> !line
                     .trim()
-                    .toLowerCase();
-                if (!word.isEmpty())
-                    words.add(word);
-            }
+                    .isEmpty())
+                .map(Word::new)
+                .collect(Collectors.toList());
         }
-        return words;
     }
 
 }

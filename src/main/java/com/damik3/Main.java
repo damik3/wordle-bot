@@ -17,7 +17,7 @@ public class Main {
 
     static GameResult play(String wordle) throws IOException {
         int maxNumberOfGuesses = 6;
-        WordleBot bot = new WordleBot("ny-times-words.txt");
+        WordleBot bot = new WordleBot("words.txt");
 
         int attempt = 0;
         String guess = null;
