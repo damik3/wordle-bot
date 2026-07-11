@@ -26,14 +26,6 @@ public class WordleBot {
             .collect(Collectors.toList());
     }
 
-    /*
-     * 1. Eliminate words based on guess result
-     * 2. For each word
-     *      For each possible solution
-     *          Calculate pattern
-     *    guess -> groups
-     *    Best (next) guess is the one with smallest numGroups and largest groupSize
-     * */
     public String nextGuess(List<Guess> previousGuess) {
         if (previousGuess == null || previousGuess.isEmpty()) {
             return "slate";
@@ -76,7 +68,10 @@ public class WordleBot {
         words.forEach(nextGuess -> {
             Map<List<GuessResult>, Integer> patternCounts = new HashMap<>();
             possibleSolutions.forEach(possibleSolution -> {
-                List<GuessResult> guessResults = calculateGuessResult(nextGuess, possibleSolution);
+                List<GuessResult> guessResults = calculateGuess(nextGuess, possibleSolution)
+                    .stream()
+                    .map(g -> g.guessResult)
+                    .collect(Collectors.toList());
                 patternCounts.merge(guessResults, 1, Integer::sum);
             });
             patternCountsByWord.put(nextGuess, patternCounts);
@@ -85,58 +80,34 @@ public class WordleBot {
     }
 
     List<Guess> calculateGuess(String guessWord, String solutionWord) {
-        List<GuessResult> guessResults = calculateGuessResult(guessWord, solutionWord);
-        List<Guess> guesses = new ArrayList<>();
-        for (int i = 0; i < guessResults.size(); i++) {
-            GuessResult guessResult = guessResults.get(i);
-            Character c = guessWord.charAt(i);
-            guesses.add(new Guess(c, i, guessResult));
-        }
-        return guesses;
-    }
-
-    List<GuessResult> calculateGuessResult(String guessWord, String solutionWord) {
         assert guessWord.length() == solutionWord.length();
         List<Character> guess = Utils.stringToCharList(guessWord);
         List<Character> solution = Utils.stringToCharList(solutionWord);
-        List<GuessResult> result = new ArrayList<>();
+        List<Guess> result = new ArrayList<>();
         for (int i = 0; i < solution.size(); i++) {
             Character solutionChar = solution.get(i);
             Character guessChar = guess.get(i);
             if (solutionChar.equals(guessChar)) {
-                result.add(GuessResult.CorrectPosition);
+                result.add(new Guess(guessChar, i, GuessResult.CorrectPosition));
             } else if (solution.contains(guessChar)) {
-                result.add(GuessResult.WrongPosition);
+                result.add(new Guess(guessChar, i, GuessResult.WrongPosition));
             } else {
-                result.add(GuessResult.NotExists);
+                result.add(new Guess(guessChar, i, GuessResult.NotExists));
             }
         }
         return result;
     }
 
-    /*
-     * Remove word if
-     *   1. is previous guess
-     *   2. it contains non-existing letters
-     *   3. it does not contain existing letters
-     * */
     void eliminateWords(List<Guess> previousGuess) {
-        possibleSolutions.removeIf(word -> isPreviousGuess(word, previousGuess));
-
         words.removeIf(word -> isPreviousGuess(word, previousGuess));
-
         possibleSolutions.removeIf(word -> containsNonExistingLetters(word, previousGuess));
-
         possibleSolutions.removeIf(word -> !containsExistingLetters(word, previousGuess));
-
-        possibleSolutions.removeIf(word -> correctLettersAreNotInCorrectPosition(word, previousGuess));
-
-        possibleSolutions.removeIf(word -> existingLettersAreInWrongPosition(word, previousGuess));
-
+        possibleSolutions.removeIf(word -> !correctLettersAreInCorrectPosition(word, previousGuess));
+        possibleSolutions.removeIf(word -> !existingLettersAreInADifferentPosition(word, previousGuess));
         System.out.println("Possible Solutions: " + possibleSolutions.size());
     }
 
-    boolean isPreviousGuess(String word, List<Guess> previousGuess) {
+    static boolean isPreviousGuess(String word, List<Guess> previousGuess) {
         String previousGuessWord = previousGuess
             .stream()
             .map(g -> g.letter)
@@ -145,7 +116,7 @@ public class WordleBot {
         return word.equals(previousGuessWord);
     }
 
-    boolean containsNonExistingLetters(String word, List<Guess> previousGuess) {
+    static boolean containsNonExistingLetters(String word, List<Guess> previousGuess) {
         Set<Integer> nonExistingLetters = previousGuess
             .stream()
             .filter(guess -> guess.guessResult == GuessResult.NotExists)
@@ -156,7 +127,7 @@ public class WordleBot {
             .anyMatch(nonExistingLetters::contains);
     }
 
-    boolean containsExistingLetters(String word, List<Guess> previousGuess) {
+    static boolean containsExistingLetters(String word, List<Guess> previousGuess) {
         Set<Integer> existingLetters = previousGuess
             .stream()
             .filter(
@@ -168,18 +139,18 @@ public class WordleBot {
             .allMatch(l -> word.indexOf(l) != -1);
     }
 
-    boolean correctLettersAreNotInCorrectPosition(String word, List<Guess> previousGuess) {
-        return !previousGuess
+    static boolean correctLettersAreInCorrectPosition(String word, List<Guess> previousGuess) {
+        return previousGuess
             .stream()
             .filter(guess -> guess.guessResult == GuessResult.CorrectPosition)
             .allMatch(guess -> word.charAt(guess.index) == guess.letter);
     }
 
-    boolean existingLettersAreInWrongPosition(String word, List<Guess> previousGuess) {
-        return !previousGuess
+    static boolean existingLettersAreInADifferentPosition(String word, List<Guess> previousGuess) {
+        return previousGuess
             .stream()
             .filter(guess -> guess.guessResult == GuessResult.WrongPosition)
-            .allMatch(guess -> word.charAt(guess.index) != guess.letter);
+            .allMatch(guess -> word.charAt(guess.index) != guess.letter && word.indexOf(guess.letter) != -1);
     }
 
     List<Word> parseWords(String filename) throws IOException {

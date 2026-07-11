@@ -1,10 +1,6 @@
 package com.damik3;
 
 public class Stats {
-    static Double numberOfGroupsWeight = 0.33;
-    static Double largestGroupWeight = 0.33;
-    static Double isPossibleSolutionWeight = 0.33;
-
     Integer numberOfGroups;
     Integer largestGroup;
     Double isPossibleSolution;
@@ -14,8 +10,7 @@ public class Stats {
         this.numberOfGroups = numberOfGroups;
         this.largestGroup = largestGroup;
         this.isPossibleSolution = isPossibleSolution;
-        this.score =
-            numberOfGroupsWeight * numberOfGroups - largestGroupWeight * largestGroup + isPossibleSolutionWeight * isPossibleSolution;
+        this.score = numberOfGroups -  largestGroup +  isPossibleSolution;
     }
 
     @Override

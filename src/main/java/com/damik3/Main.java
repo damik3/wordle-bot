@@ -7,7 +7,7 @@ import java.util.Objects;
 
 public class Main {
     public static void main(String[] args) throws IOException {
-        String wordle = "sling";
+        String wordle = "avian";
         GameResult result = play(wordle);
         if (result.solved)
             System.out.println("Wordle at " + result.steps + "!");
