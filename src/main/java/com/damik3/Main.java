@@ -1,5 +1,8 @@
 package com.damik3;
 
+import com.damik3.model.Game;
+import com.damik3.model.Guess;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -7,15 +10,15 @@ import java.util.Objects;
 
 public class Main {
     public static void main(String[] args) throws IOException {
-        String wordle = "avian";
-        GameResult result = play(wordle);
-        if (result.solved)
-            System.out.println("Wordle at " + result.steps + "!");
+        String wordle = "slain";
+        Game game = play(wordle);
+        if (game.solved)
+            System.out.println("Wordle at " + game.steps + "!");
         else
             System.out.println("Could not find solution...");
     }
 
-    static GameResult play(String wordle) throws IOException {
+    static Game play(String wordle) throws IOException {
         int maxNumberOfGuesses = 6;
         WordleBot bot = new WordleBot("words.txt");
 
@@ -25,13 +28,13 @@ public class Main {
 
         while (attempt < maxNumberOfGuesses && !Objects.equals(guess, wordle)) {
             guess = bot.nextGuess(guessResult);
-            System.out.println("Guess: " + guess);
+            System.out.println("\nGuess: " + guess);
             guessResult = bot.calculateGuess(guess, wordle);
-            System.out.println("previousGuessResult: " + guessResult);
+            System.out.println("Result: " + guessResult);
             attempt++;
         }
 
         boolean solved = Objects.equals(guess, wordle);
-        return new GameResult(solved, attempt);
+        return new Game(solved, attempt);
     }
 }

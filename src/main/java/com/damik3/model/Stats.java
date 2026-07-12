@@ -1,10 +1,10 @@
-package com.damik3;
+package com.damik3.model;
 
 public class Stats {
-    Integer numberOfGroups;
-    Integer largestGroup;
-    Double isPossibleSolution;
-    Double score;
+    final Integer numberOfGroups;
+    final Integer largestGroup;
+    final Double isPossibleSolution;
+    public final Double score;
 
     public Stats(Integer numberOfGroups, Integer largestGroup, Double isPossibleSolution) {
         this.numberOfGroups = numberOfGroups;
