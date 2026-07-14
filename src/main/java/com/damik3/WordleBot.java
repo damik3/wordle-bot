@@ -46,7 +46,7 @@ public class WordleBot {
         return calculateNextBestGuess(statsByWord);
     }
 
-    String calculateNextBestGuess(Map<String, Stats> statsByWord) {
+    static String calculateNextBestGuess(Map<String, Stats> statsByWord) {
         List<Map.Entry<String, Stats>> entryList = new ArrayList<>(statsByWord.entrySet());
         Map.Entry<String, Stats> bestGuess = entryList.stream()
             .max(Comparator.comparingDouble((Map.Entry<String, Stats> e) -> e.getValue().score))
@@ -81,7 +81,7 @@ public class WordleBot {
         return patternCountsByWord;
     }
 
-    List<Guess> calculateGuess(String guessWord, String solutionWord) {
+    static List<Guess> calculateGuess(String guessWord, String solutionWord) {
         assert guessWord.length() == solutionWord.length();
         List<Character> guess = Utils.stringToCharList(guessWord);
         List<Character> solution = Utils.stringToCharList(solutionWord);

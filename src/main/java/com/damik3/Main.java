@@ -29,7 +29,7 @@ public class Main {
         while (attempt < maxNumberOfGuesses && !Objects.equals(guess, wordle)) {
             guess = bot.nextGuess(guessResult);
             System.out.println("\nGuess: " + guess);
-            guessResult = bot.calculateGuess(guess, wordle);
+            guessResult = WordleBot.calculateGuess(guess, wordle);
             System.out.println("Result: " + guessResult);
             attempt++;
         }
