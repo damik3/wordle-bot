@@ -1,5 +1,7 @@
 package com.damik3.model;
 
+import java.util.Objects;
+
 public class Guess {
 
     public enum Result {
@@ -33,5 +35,18 @@ public class Guess {
     @Override
     public String toString() {
         return letter + "(" + guessResult + ")";
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass())
+            return false;
+        Guess guess = (Guess) o;
+        return index == guess.index && Objects.equals(letter, guess.letter) && guessResult == guess.guessResult;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(letter, index, guessResult);
     }
 }

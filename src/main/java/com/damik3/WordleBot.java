@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class WordleBot {
@@ -85,14 +86,20 @@ public class WordleBot {
         assert guessWord.length() == solutionWord.length();
         List<Character> guess = Utils.stringToCharList(guessWord);
         List<Character> solution = Utils.stringToCharList(solutionWord);
+        Map<Character, Long> consumed = solutionWord
+            .chars()
+            .mapToObj(c -> (char) c)
+            .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
         List<Guess> result = new ArrayList<>();
         for (int i = 0; i < solution.size(); i++) {
             Character solutionChar = solution.get(i);
             Character guessChar = guess.get(i);
             if (solutionChar.equals(guessChar)) {
                 result.add(new Guess(guessChar, i, Guess.Result.CorrectPosition));
-            } else if (solution.contains(guessChar)) {
+                consumed.put(guessChar, consumed.get(guessChar) - 1);
+            } else if (solution.contains(guessChar) && consumed.get((guessChar)) > 0) {
                 result.add(new Guess(guessChar, i, Guess.Result.WrongPosition));
+                consumed.put(guessChar, consumed.get(guessChar) - 1);
             } else {
                 result.add(new Guess(guessChar, i, Guess.Result.NotExists));
             }

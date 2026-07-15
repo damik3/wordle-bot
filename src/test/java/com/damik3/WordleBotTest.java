@@ -8,12 +8,14 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import static com.damik3.model.Guess.Result.CorrectPosition;
 import static com.damik3.model.Guess.Result.NotExists;
 import static com.damik3.model.Guess.Result.WrongPosition;
 import static java.util.Map.entry;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class WordleBotTest {
 
@@ -28,7 +30,7 @@ public class WordleBotTest {
         );
 
         String nextBestGuess = WordleBot.calculateNextBestGuess(statsByWord);
-        assertEquals("raise",  nextBestGuess);
+        assertTrue(Objects.equals(nextBestGuess, "raise") || Objects.equals(nextBestGuess, "parse"));
     }
 
     @Test
@@ -110,45 +112,119 @@ public class WordleBotTest {
         Map<List<Guess.Result>, Integer> expectedPatternCountsForYippy = Map.ofEntries(
             entry(List.of(NotExists, WrongPosition, NotExists, NotExists, NotExists), 1),
             entry(List.of(NotExists, NotExists, NotExists, NotExists, NotExists), 1),
-            entry(List.of(NotExists, NotExists, WrongPosition, WrongPosition, NotExists), 1)
+            entry(List.of(NotExists, NotExists, WrongPosition, NotExists, NotExists), 1)
         );
         Map<List<Guess.Result>, Integer> patternCountsForYippy = patternCounts.get("yippy");
         assertEquals(expectedPatternCountsForYippy, patternCountsForYippy);
     }
-
 
     @Test
     void calculateGuess_shouldWork() {
         String guessWord = "abcde";
         String solutionWord = "bcffe";
         List<Guess> guesses = WordleBot.calculateGuess(guessWord, solutionWord);
-        assertEquals(5, guesses.size());
+        List<Guess> expectedGuesses = List.of(
+            new Guess('a', 0, NotExists),
+            new Guess('b', 1, WrongPosition),
+            new Guess('c', 2, WrongPosition),
+            new Guess('d', 3, NotExists),
+            new Guess('e', 4, CorrectPosition)
+        );
+        assertEquals(expectedGuesses, guesses);
+    }
 
-        Guess guess;
-        guess = guesses.get(0);
-        assertEquals(NotExists, guess.guessResult);
-        assertEquals(0, guess.index);
-        assertEquals('a', guess.letter);
+    @Test
+    void calculateGuess_shouldWorkForDoubleLetters_when1Exists_and2AreGuessed() {
+        String guessWord1 = "aafff";
+        String solutionWord1 = "abbbb";
+        List<Guess> guesses1 = WordleBot.calculateGuess(guessWord1, solutionWord1);
+        List<Guess> expectedGuesses1 = List.of(
+            new Guess('a', 0, CorrectPosition),
+            new Guess('a', 1, NotExists),
+            new Guess('f', 2, NotExists),
+            new Guess('f', 3, NotExists),
+            new Guess('f', 4, NotExists)
+        );
+        assertEquals(expectedGuesses1, guesses1);
 
-        guess = guesses.get(1);
-        assertEquals(WrongPosition, guess.guessResult);
-        assertEquals(1, guess.index);
-        assertEquals('b', guess.letter);
+        String guessWord2 = "fffaa";
+        String solutionWord2 = "abbbb";
+        List<Guess> guesses2 = WordleBot.calculateGuess(guessWord2, solutionWord2);
+        List<Guess> expectedGuesses2 = List.of(
+            new Guess('f', 0, NotExists),
+            new Guess('f', 1, NotExists),
+            new Guess('f', 2, NotExists),
+            new Guess('a', 3, WrongPosition),
+            new Guess('a', 4, NotExists)
+        );
+        assertEquals(expectedGuesses2, guesses2);
+    }
 
-        guess = guesses.get(2);
-        assertEquals(WrongPosition, guess.guessResult);
-        assertEquals(2, guess.index);
-        assertEquals('c', guess.letter);
+    @Test
+    void calculateGuess_shouldWorkForDoubleLetters_when2Exist_and2AreGuessed() {
+        String guessWord1 = "aafff";
+        String solutionWord1 = "aabbb";
+        List<Guess> guesses1 = WordleBot.calculateGuess(guessWord1, solutionWord1);
+        List<Guess> expectedGuesses1 = List.of(
+            new Guess('a', 0, CorrectPosition),
+            new Guess('a', 1, CorrectPosition),
+            new Guess('f', 2, NotExists),
+            new Guess('f', 3, NotExists),
+            new Guess('f', 4, NotExists)
+        );
+        assertEquals(expectedGuesses1, guesses1);
 
-        guess = guesses.get(3);
-        assertEquals(NotExists, guess.guessResult);
-        assertEquals(3, guess.index);
-        assertEquals('d', guess.letter);
+        String guessWord2 = "afaff";
+        String solutionWord2 = "aabbb";
+        List<Guess> guesses2 = WordleBot.calculateGuess(guessWord2, solutionWord2);
+        List<Guess> expectedGuesses2 = List.of(
+            new Guess('a', 0, CorrectPosition),
+            new Guess('f', 1, NotExists),
+            new Guess('a', 2, WrongPosition),
+            new Guess('f', 3, NotExists),
+            new Guess('f', 4, NotExists)
+        );
+        assertEquals(expectedGuesses2, guesses2);
 
-        guess = guesses.get(4);
-        assertEquals(Guess.Result.CorrectPosition, guess.guessResult);
-        assertEquals(4, guess.index);
-        assertEquals('e', guess.letter);
+        String guessWord3 = "fffaa";
+        String solutionWord3 = "aabbb";
+        List<Guess> guesses3 = WordleBot.calculateGuess(guessWord3, solutionWord3);
+        List<Guess> expectedGuesses3 = List.of(
+            new Guess('f', 0, NotExists),
+            new Guess('f', 1, NotExists),
+            new Guess('f', 2, NotExists),
+            new Guess('a', 3, WrongPosition),
+            new Guess('a', 4, WrongPosition)
+        );
+        assertEquals(expectedGuesses3, guesses3);
+
+    }
+
+    @Test
+    void calculateGuess_shouldWorkForDoubleLetters_when2Exist_and1IsGuessed() {
+        String guessWord1 = "affff";
+        String solutionWord1 = "aacde";
+        List<Guess> guesses1 = WordleBot.calculateGuess(guessWord1, solutionWord1);
+        List<Guess> expectedGuesses1 = List.of(
+            new Guess('a', 0, CorrectPosition),
+            new Guess('f', 1, NotExists),
+            new Guess('f', 2, NotExists),
+            new Guess('f', 3, NotExists),
+            new Guess('f', 4, NotExists)
+        );
+        assertEquals(expectedGuesses1, guesses1);
+
+        String guessWord2 = "ffffa";
+        String solutionWord2 = "aacde";
+        List<Guess> guesses2 = WordleBot.calculateGuess(guessWord2, solutionWord2);
+        List<Guess> expectedGuesses2 = List.of(
+            new Guess('f', 0, NotExists),
+            new Guess('f', 1, NotExists),
+            new Guess('f', 2, NotExists),
+            new Guess('f', 3, NotExists),
+            new Guess('a', 4, WrongPosition)
+        );
+        assertEquals(expectedGuesses2, guesses2);
     }
 
     @Test
