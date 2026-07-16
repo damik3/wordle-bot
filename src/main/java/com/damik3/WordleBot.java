@@ -93,24 +93,37 @@ public class WordleBot {
 
     static List<Guess> calculateGuess(String guessWord, String solutionWord) {
         assert guessWord.length() == solutionWord.length();
+
         Map<Character, Long> consumed = solutionWord
             .chars()
             .mapToObj(c -> (char) c)
             .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
         List<Guess> result = new ArrayList<>();
+
         for (int i = 0; i < solutionWord.length(); i++) {
             Character solutionChar = solutionWord.charAt(i);
             Character guessChar = guessWord.charAt(i);
             if (solutionChar.equals(guessChar)) {
                 result.add(new Guess(guessChar, i, Guess.Result.CorrectPosition));
                 consumed.put(guessChar, consumed.get(guessChar) - 1);
-            } else if (solutionWord.indexOf(guessChar) != -1 && consumed.get((guessChar)) > 0) {
+            }
+        }
+
+        for (int i = 0; i < solutionWord.length(); i++) {
+            Character solutionChar = solutionWord.charAt(i);
+            Character guessChar = guessWord.charAt(i);
+            if (solutionChar.equals(guessChar)) {
+                continue;
+            }
+            else if (solutionWord.indexOf(guessChar) != -1 && consumed.get(guessChar) > 0) {
                 result.add(new Guess(guessChar, i, Guess.Result.WrongPosition));
                 consumed.put(guessChar, consumed.get(guessChar) - 1);
             } else {
                 result.add(new Guess(guessChar, i, Guess.Result.NotExists));
             }
         }
+
+        result.sort(Comparator.comparing(g -> g.index));
         return result;
     }
 

@@ -228,6 +228,21 @@ public class WordleBotTest {
     }
 
     @Test
+    void calculateGuess_shouldMarkCorrectFirstAndThenIfAnyMarkWrongPosition() {
+        String guessWord = "aerie";
+        String solutionWord = "raise";
+        List<Guess> guesses = WordleBot.calculateGuess(guessWord, solutionWord);
+        List<Guess> expectedGuesses = List.of(
+            new Guess('a', 0, WrongPosition),
+            new Guess('e', 1, NotExists),
+            new Guess('r', 2, WrongPosition),
+            new Guess('i', 3, WrongPosition),
+            new Guess('e', 4, CorrectPosition)
+        );
+        assertEquals(expectedGuesses, guesses);
+    }
+
+    @Test
     void WordleBot_shouldParseWordsFile() throws IOException {
         WordleBot wordleBot = new WordleBot("words_10.txt");
         List<String> words = wordleBot.words;
