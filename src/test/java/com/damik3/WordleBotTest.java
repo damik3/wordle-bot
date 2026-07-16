@@ -257,28 +257,6 @@ public class WordleBotTest {
         );
         guess = bot.nextGuess(guessResult);
         System.out.println("Guess: " + guess);
-        guessResult = new ArrayList<>(
-            List.of(
-                new Guess('t', 0, WrongPosition),
-                new Guess('a', 1, Guess.Result.CorrectPosition),
-                new Guess('c', 2, WrongPosition),
-                new Guess('i', 3, NotExists),
-                new Guess('t', 4, WrongPosition)
-            )
-        );
-        guess = bot.nextGuess(guessResult);
-        System.out.println("Guess: " + guess);
-        guessResult = new ArrayList<>(
-            List.of(
-                new Guess('w', 0, NotExists),
-                new Guess('o', 1, NotExists),
-                new Guess('m', 2, NotExists),
-                new Guess('b', 3, WrongPosition),
-                new Guess('s', 4, NotExists)
-            )
-        );
-        guess = bot.nextGuess(guessResult);
-        System.out.println("Guess: " + guess);
     }
 
 }

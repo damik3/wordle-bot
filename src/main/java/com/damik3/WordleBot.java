@@ -3,7 +3,6 @@ package com.damik3;
 import com.damik3.model.Guess;
 import com.damik3.model.Stats;
 import com.damik3.model.Word;
-import com.damik3.word.elimination.WordEliminationRules;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -40,7 +39,7 @@ public class WordleBot {
         if (previousGuess == null || previousGuess.isEmpty()) {
             return this.openingWord;
         }
-        WordEliminationRules.apply(possibleSolutions, previousGuess);
+        eliminateWords(possibleSolutions, previousGuess);
         System.out.println("Possible Solutions: " + possibleSolutions.size());
         Map<String, Map<List<Guess.Result>, Integer>> patternCountsByWord = calculatePatternCounts();
         Map<String, Stats> statsByWord = calculateStatsByWord(patternCountsByWord);
@@ -80,6 +79,16 @@ public class WordleBot {
             patternCountsByWord.put(nextGuess, patternCounts);
         });
         return patternCountsByWord;
+    }
+
+    static void eliminateWords(List<String> possibleSolutions, List<Guess> previousGuess) {
+        String previousGuessWord = previousGuess.stream()
+            .map(g -> g.letter)
+            .map(String::valueOf)
+            .collect(Collectors.joining());
+        possibleSolutions.removeIf(possibleSolution ->
+            !previousGuess.equals(calculateGuess(previousGuessWord, possibleSolution))
+        );
     }
 
     static List<Guess> calculateGuess(String guessWord, String solutionWord) {
