@@ -83,6 +83,7 @@ public class WordleBot {
 
     static void eliminateWords(List<String> possibleSolutions, List<Guess> previousGuess) {
         String previousGuessWord = previousGuess.stream()
+            .sorted(Comparator.comparingInt(g -> g.index))
             .map(g -> g.letter)
             .map(String::valueOf)
             .collect(Collectors.joining());
@@ -92,8 +93,6 @@ public class WordleBot {
     }
 
     static List<Guess> calculateGuess(String guessWord, String solutionWord) {
-        assert guessWord.length() == solutionWord.length();
-
         Map<Character, Long> consumed = solutionWord
             .chars()
             .mapToObj(c -> (char) c)
