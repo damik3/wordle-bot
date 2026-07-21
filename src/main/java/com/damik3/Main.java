@@ -1,7 +1,8 @@
 package com.damik3;
 
-import com.damik3.model.Game;
 import com.damik3.model.Guess;
+import com.damik3.solver.Solver;
+import com.damik3.solver.wordlebot.WordleBotSolver;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -10,17 +11,18 @@ import java.util.Objects;
 
 public class Main {
     public static void main(String[] args) throws IOException {
-        String wordle = "slain";
-        Game game = play(wordle);
-        if (game.solved)
-            System.out.println("Wordle at " + game.steps + "!");
+        String wordle = "pizza";
+        GameResult gameResult = play(wordle);
+        if (gameResult.solved)
+            System.out.println("Wordle at " + gameResult.steps + "!");
         else
             System.out.println("Could not find solution...");
     }
 
-    static Game play(String wordle) throws IOException {
+    static GameResult play(String wordle) throws IOException {
         int maxNumberOfGuesses = 6;
-        WordleBot bot = new WordleBot("words.txt");
+        Solver solver = new WordleBotSolver();
+        Wordle bot = new Wordle("words.txt", solver);
 
         int attempt = 0;
         String guess = null;
@@ -29,12 +31,22 @@ public class Main {
         while (attempt < maxNumberOfGuesses && !Objects.equals(guess, wordle)) {
             guess = bot.nextGuess(guessResult);
             System.out.println("\nGuess: " + guess);
-            guessResult = WordleBot.calculateGuess(guess, wordle);
+            guessResult = Rules.calculateGuess(guess, wordle);
             System.out.println("Result: " + guessResult);
             attempt++;
         }
 
         boolean solved = Objects.equals(guess, wordle);
-        return new Game(solved, attempt);
+        return new GameResult(solved, attempt);
+    }
+
+    static public class GameResult {
+        public final boolean solved;
+        public final int steps;
+
+        public GameResult(boolean solved, int steps) {
+            this.solved = solved;
+            this.steps = steps;
+        }
     }
 }

@@ -1,4 +1,4 @@
-package com.damik3.model;
+package com.damik3.solver.wordlebot.model;
 
 import java.util.Objects;
 
@@ -17,7 +17,8 @@ public class Stats {
 
     @Override
     public String toString() {
-        return "Stats{" + "numberOfGroups=" + numberOfGroups + ", largestGroup=" + largestGroup + ", isPossibleSolution=" + isPossibleSolution + ", score=" + score + '}';
+        return "Stats{" + "numberOfGroups=" + numberOfGroups + ", largestGroup=" + largestGroup + ", " +
+            "isPossibleSolution=" + isPossibleSolution + ", score=" + score + '}';
     }
 
     @Override

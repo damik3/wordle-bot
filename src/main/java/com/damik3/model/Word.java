@@ -29,7 +29,9 @@ public class Word {
 
     // Constructor that accepts a raw line from words.txt
     public Word(String line) {
-        if (line == null || line.trim().isEmpty()) {
+        if (line == null || line
+            .trim()
+            .isEmpty()) {
             System.out.println(line);
             throw new IllegalArgumentException("Line is empty or is a header row");
         }
@@ -57,10 +59,8 @@ public class Word {
         this.maxWordsRemaining = Integer.parseInt(columns[6]);
         this.numberOfGroups = Integer.parseInt(columns[7]);
         this.prior = Double.parseDouble(columns[8]);
-        this.precomputedAverage = new Tuple<>(
-            Double.parseDouble(columns[9].split(",")[0]),
-            Double.parseDouble(columns[9].split(",")[1])
-        );
+        this.precomputedAverage = new Tuple<>(Double.parseDouble(columns[9].split(",")[0]),
+            Double.parseDouble(columns[9].split(",")[1]));
         this.expectedAdditionalGuesses = Double.parseDouble(columns[10]);
     }
 }
