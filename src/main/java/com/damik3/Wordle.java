@@ -51,6 +51,10 @@ public class Wordle {
         this.solver = solver;
     }
 
+    public List<String> getPossibleSolutions() {
+        return possibleSolutions;
+    }
+
     public Result play(String solution) {
         int attempt = 0;
         String guess;
