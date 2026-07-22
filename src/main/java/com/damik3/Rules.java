@@ -25,6 +25,14 @@ public class Rules {
     }
 
     static public List<Guess> calculateGuess(String guessWord, String solutionWord) {
+        if (guessWord == null) {
+            throw new IllegalArgumentException("guessWord is null");
+        }
+
+        if (solutionWord == null) {
+            throw new IllegalArgumentException("solutionWord is null");
+        }
+
         Map<Character, Long> consumed = solutionWord
             .chars()
             .mapToObj(c -> (char) c)

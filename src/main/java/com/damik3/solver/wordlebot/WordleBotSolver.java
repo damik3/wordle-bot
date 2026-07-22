@@ -16,7 +16,8 @@ public class WordleBotSolver implements Solver {
         return words
             .stream()
             .min(Comparator.comparingDouble(w -> w.expectedAdditionalGuesses))
-            .get().word;
+            .map(w -> w.word)
+            .orElse(null);
     }
 
     @Override
@@ -29,11 +30,11 @@ public class WordleBotSolver implements Solver {
 
     String calculateNextBestGuess(Map<String, Stats> statsByWord) {
         List<Map.Entry<String, Stats>> entryList = new ArrayList<>(statsByWord.entrySet());
-        Map.Entry<String, Stats> bestGuess = entryList
+        return entryList
             .stream()
             .max(Comparator.comparingDouble((Map.Entry<String, Stats> e) -> e.getValue().score))
-            .get();
-        return bestGuess.getKey();
+            .map(Map.Entry::getKey)
+            .orElse(null);
     }
 
     Map<String, Stats> calculateStatsByWord(List<String> possibleSolutions, Map<String, Map<List<Guess.Result>,
@@ -45,7 +46,7 @@ public class WordleBotSolver implements Solver {
                 .values()
                 .stream()
                 .max(Comparator.comparingInt(i -> i))
-                .get();
+                .orElse(0);
             Double isPossibleSolution = possibleSolutions.contains(s) ? 1.0 : 0;
             statsByWord.put(s, new Stats(numberOfGroups, largestGroup, isPossibleSolution));
         });

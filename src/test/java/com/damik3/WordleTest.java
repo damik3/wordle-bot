@@ -1,16 +1,14 @@
 package com.damik3;
 
-import com.damik3.model.Guess;
 import com.damik3.solver.wordlebot.WordleBotSolver;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
-import static com.damik3.model.Guess.Result.NotExists;
-import static com.damik3.model.Guess.Result.WrongPosition;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class WordleTest {
 
@@ -25,26 +23,44 @@ public class WordleTest {
     }
 
     @Test
-    void play() throws IOException {
+    void play_shouldSolveSlate() throws IOException {
         Wordle wordle = new Wordle();
         wordle.loadWords("words.txt");
         wordle.setSolver(new WordleBotSolver());
-        String guess;
-        List<Guess> guessResult = new ArrayList<>();
-
-        guess = wordle.nextGuess(guessResult);
-        System.out.println("Guess: " + guess);
-        guessResult = new ArrayList<>(
-            List.of(
-                new Guess('s', 0, NotExists),
-                new Guess('l', 1, NotExists),
-                new Guess('a', 2, WrongPosition),
-                new Guess('t', 3, WrongPosition),
-                new Guess('e', 4, NotExists)
-            )
-        );
-        guess = wordle.nextGuess(guessResult);
-        System.out.println("Guess: " + guess);
+        Wordle.Result result = wordle.play("slate");
+        assertTrue(result.solved);
     }
+
+    @Test
+    void play_shouldNotThrowWhenThereAreNoPossibleSolutions() throws IOException {
+        Wordle wordle = new Wordle();
+        wordle.loadWords("words.txt");
+        wordle.setSolver(new WordleBotSolver());
+        Wordle.Result result = wordle.play("zzzzz");
+        assertFalse(result.solved);
+    }
+
+    //@Test
+    //void play() throws IOException {
+    //    Wordle wordle = new Wordle();
+    //    wordle.loadWords("words.txt");
+    //    wordle.setSolver(new WordleBotSolver());
+    //    String guess;
+    //    List<Guess> guessResult = new ArrayList<>();
+    //
+    //    guess = wordle.nextGuess(guessResult);
+    //    System.out.println("Guess: " + guess);
+    //    guessResult = new ArrayList<>(
+    //        List.of(
+    //            new Guess('s', 0, NotExists),
+    //            new Guess('l', 1, NotExists),
+    //            new Guess('a', 2, WrongPosition),
+    //            new Guess('t', 3, WrongPosition),
+    //            new Guess('e', 4, NotExists)
+    //        )
+    //    );
+    //    guess = wordle.nextGuess(guessResult);
+    //    System.out.println("Guess: " + guess);
+    //}
 
 }

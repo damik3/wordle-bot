@@ -53,18 +53,19 @@ public class Wordle {
 
     public Result play(String solution) {
         int attempt = 0;
-        String guess = null;
+        String guess;
         List<String> guesses = new ArrayList<>();
         List<Guess> guessResult = new ArrayList<>();
         List<Integer> numPossibleSolutions = new ArrayList<>();
 
-        while (attempt < maxNumberOfGuesses && !Objects.equals(guess, solution)) {
+        do {
+            attempt++;
             guess = nextGuess(guessResult);
             guesses.add(guess);
             numPossibleSolutions.add(possibleSolutions.size());
-            guessResult = Rules.calculateGuess(guess, solution);
-            attempt++;
-        }
+            if (guess != null)
+                guessResult = Rules.calculateGuess(guess, solution);
+        } while(guess != null && attempt < maxNumberOfGuesses && !Objects.equals(guess, solution));
 
         boolean solved = Objects.equals(guess, solution);
         return new Result(solved, attempt, guesses, numPossibleSolutions);
@@ -74,7 +75,10 @@ public class Wordle {
         if (previousGuess == null || previousGuess.isEmpty())
             return solver.firstGuess(words);
         Rules.eliminateWords(possibleSolutions, previousGuess);
-        return solver.nextGuess(validGuesses, possibleSolutions);
+        if (possibleSolutions.isEmpty())
+             return null;
+        else
+            return solver.nextGuess(validGuesses, possibleSolutions);
     }
 
     private List<Word> parse(String filename) throws IOException {
