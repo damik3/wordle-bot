@@ -32,7 +32,6 @@ public class Word {
         if (line == null || line
             .trim()
             .isEmpty()) {
-            System.out.println(line);
             throw new IllegalArgumentException("Line is empty or is a header row");
         }
 

@@ -12,6 +12,8 @@ import java.util.stream.Collectors;
 public class Rules {
 
     static void eliminateWords(List<String> possibleSolutions, List<Guess> previousGuess) {
+        if (previousGuess == null || previousGuess.isEmpty())
+            return;
         String previousGuessWord = previousGuess
             .stream()
             .sorted(Comparator.comparingInt(g -> g.index))

@@ -2,6 +2,7 @@ package com.damik3.solver.wordlebot;
 
 import com.damik3.Rules;
 import com.damik3.model.Guess;
+import com.damik3.model.Word;
 import com.damik3.solver.Solver;
 import com.damik3.solver.wordlebot.model.Stats;
 
@@ -9,6 +10,15 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class WordleBotSolver implements Solver {
+
+    @Override
+    public String firstGuess(List<Word> words) {
+        return words
+            .stream()
+            .min(Comparator.comparingDouble(w -> w.expectedAdditionalGuesses))
+            .get().word;
+    }
+
     @Override
     public String nextGuess(List<String> words, List<String> possibleSolutions) {
         Map<String, Map<List<Guess.Result>, Integer>> patternCountsByWord = calculatePatternCounts(words,

@@ -13,14 +13,30 @@ import java.util.stream.Collectors;
 
 public class Wordle {
 
-    List<String> words;
+    static final int maxNumberOfGuesses = 6;
+
+    List<Word> words;
+    List<String> validGuesses;
     List<String> possibleSolutions;
-    String openingWord;
     Solver solver;
 
-    public Wordle(String wordsFileName, Solver solver) throws IOException {
-        List<Word> words = parseWords(wordsFileName);
-        this.words = words
+    static public class Result {
+        public final boolean solved;
+        public final int steps;
+        public final List<String> guesses;
+        public final List<Integer> numPossibleSolutions;
+
+        public Result(boolean solved, int steps, List<String> guesses, List<Integer> numPossibleSolutions) {
+            this.solved = solved;
+            this.steps = steps;
+            this.guesses = guesses;
+            this.numPossibleSolutions = numPossibleSolutions;
+        }
+    }
+
+    public void loadWords(String wordsFileName) throws IOException {
+        this.words = parse(wordsFileName);
+        this.validGuesses = words
             .stream()
             .map(w -> w.word)
             .collect(Collectors.toList());
@@ -29,23 +45,39 @@ public class Wordle {
             .filter(w -> w.prior > 0)
             .map(w -> w.word)
             .collect(Collectors.toList());
-        this.openingWord = words
-            .stream()
-            .min(Comparator.comparingDouble(w -> w.expectedAdditionalGuesses))
-            .get().word;
+    }
+
+    public void setSolver(Solver solver) {
         this.solver = solver;
     }
 
-    public String nextGuess(List<Guess> previousGuess) {
-        if (previousGuess == null || previousGuess.isEmpty()) {
-            return this.openingWord;
+    public Result play(String solution) {
+        int attempt = 0;
+        String guess = null;
+        List<String> guesses = new ArrayList<>();
+        List<Guess> guessResult = new ArrayList<>();
+        List<Integer> numPossibleSolutions = new ArrayList<>();
+
+        while (attempt < maxNumberOfGuesses && !Objects.equals(guess, solution)) {
+            guess = nextGuess(guessResult);
+            guesses.add(guess);
+            numPossibleSolutions.add(possibleSolutions.size());
+            guessResult = Rules.calculateGuess(guess, solution);
+            attempt++;
         }
-        Rules.eliminateWords(possibleSolutions, previousGuess);
-        System.out.println("Possible Solutions: " + possibleSolutions.size());
-        return this.solver.nextGuess(this.words, this.possibleSolutions);
+
+        boolean solved = Objects.equals(guess, solution);
+        return new Result(solved, attempt, guesses, numPossibleSolutions);
     }
 
-    List<Word> parseWords(String filename) throws IOException {
+    public String nextGuess(List<Guess> previousGuess) {
+        if (previousGuess == null || previousGuess.isEmpty())
+            return solver.firstGuess(words);
+        Rules.eliminateWords(possibleSolutions, previousGuess);
+        return solver.nextGuess(validGuesses, possibleSolutions);
+    }
+
+    private List<Word> parse(String filename) throws IOException {
         InputStream inputStream = getClass()
             .getClassLoader()
             .getResourceAsStream(filename);
