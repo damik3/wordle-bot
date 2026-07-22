@@ -34,6 +34,24 @@ public class Wordle {
         }
     }
 
+    public Wordle shallowCopy() {
+        Wordle newWordle = new Wordle();
+        newWordle.words = new ArrayList<>(this.words);
+        newWordle.validGuesses = new ArrayList<>(this.validGuesses);
+        newWordle.possibleSolutions = new ArrayList<>(this.possibleSolutions);
+        newWordle.solver = this.solver;
+        return newWordle;
+    }
+
+    public void setSolver(Solver solver) {
+        this.solver = solver;
+    }
+
+    public List<String> getPossibleSolutions() {
+        return possibleSolutions;
+    }
+
+
     public void loadWords(String wordsFileName) throws IOException {
         this.words = parse(wordsFileName);
         this.validGuesses = words
@@ -45,14 +63,6 @@ public class Wordle {
             .filter(w -> w.prior > 0)
             .map(w -> w.word)
             .collect(Collectors.toList());
-    }
-
-    public void setSolver(Solver solver) {
-        this.solver = solver;
-    }
-
-    public List<String> getPossibleSolutions() {
-        return possibleSolutions;
     }
 
     public Result play(String solution) {
