@@ -13302,7 +13302,7 @@ gugas
 imlis
 pully
 wombs
-stats
+entropy
 agaze
 skins
 toots

@@ -1,5 +1,6 @@
 package com.damik3;
 
+import com.damik3.solver.entropy.EntropySolver;
 import com.damik3.solver.wordlebot.WordleBotSolver;
 
 import java.io.IOException;
@@ -8,7 +9,7 @@ public class Main {
     public static void main(String[] args) throws IOException {
         Wordle wordle = new Wordle();
         wordle.loadWords("words.txt");
-        wordle.setSolver(new WordleBotSolver());
+        wordle.setSolver(new EntropySolver());
 
         Wordle.Result result = wordle.play("orbit");
         System.out.println(result.solved ? "Wordle at " + result.steps + "!" : "Could not find solution...");

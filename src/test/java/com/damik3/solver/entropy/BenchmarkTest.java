@@ -1,0 +1,28 @@
+package com.damik3.solver.entropy;
+
+import com.damik3.solver.Benchmark;
+import com.damik3.solver.BenchmarkResults;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
+
+import java.io.IOException;
+
+@Tag("benchmark")
+public class BenchmarkTest {
+
+    /**
+     * === WordleBotSolver benchmark ===
+     * Games:      1000
+     * Solved:     1000 (100.0%)
+     * Failed:     0
+     * Avg steps:  3.592  (min 2, max 6)
+     * Histogram:  2:18  3:439  4:478  5:63  6:2
+     * Elapsed:    290.03s  (3.4 games/s)
+     * */
+
+    @Test
+    void runBenchmark() throws IOException {
+        BenchmarkResults results = Benchmark.run(new EntropySolver());
+        System.out.println(results);
+    }
+}

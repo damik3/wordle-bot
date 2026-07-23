@@ -9,7 +9,7 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
 
-public final class PerformanceTestResults {
+public final class BenchmarkResults {
 
     final int total;
     final int solved;
@@ -22,7 +22,7 @@ public final class PerformanceTestResults {
     final List<String> failedSolutions;
     final long elapsedMs;
 
-    public PerformanceTestResults(
+    public BenchmarkResults(
         int total,
         int solved,
         int failed,
@@ -46,7 +46,7 @@ public final class PerformanceTestResults {
         this.elapsedMs = elapsedMs;
     }
 
-    public static PerformanceTestResults from(List<GameOutcome> outcomes, long elapsedMs) {
+    public static BenchmarkResults from(List<GameOutcome> outcomes, long elapsedMs) {
         int total = outcomes.size();
         int solved = 0;
         long stepsSum = 0;
@@ -75,7 +75,7 @@ public final class PerformanceTestResults {
             minSteps = 0;
         }
 
-        return new PerformanceTestResults(
+        return new BenchmarkResults(
             total,
             solved,
             failed,
