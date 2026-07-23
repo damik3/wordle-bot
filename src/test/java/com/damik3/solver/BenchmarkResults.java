@@ -102,7 +102,7 @@ public final class BenchmarkResults {
 
         double gamesPerSec = elapsedMs == 0 ? 0 : total * 1000.0 / elapsedMs;
         StringBuilder sb = new StringBuilder();
-        sb.append("=== WordleBotSolver benchmark ===\n");
+        sb.append("=== benchmark results ===\n");
         sb.append(String.format(Locale.ROOT, "Games:      %d%n", total));
         sb.append(String.format(Locale.ROOT, "Solved:     %d (%.1f%%)%n", solved, solveRate));
         sb.append(String.format(Locale.ROOT, "Failed:     %d%n", failed));

@@ -1,6 +1,6 @@
 package com.damik3;
 
-import com.damik3.solver.wordlebot.WordleBotSolver;
+import com.damik3.solver.heuristic.HeuristicSolver;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -26,7 +26,7 @@ public class WordleTest {
     void play_shouldSolveSlate() throws IOException {
         Wordle wordle = new Wordle();
         wordle.loadWords("words.txt");
-        wordle.setSolver(new WordleBotSolver());
+        wordle.setSolver(new HeuristicSolver());
         Wordle.Result result = wordle.play("slate");
         assertTrue(result.solved);
     }
@@ -35,7 +35,7 @@ public class WordleTest {
     void play_shouldNotThrowWhenThereAreNoPossibleSolutions() throws IOException {
         Wordle wordle = new Wordle();
         wordle.loadWords("words.txt");
-        wordle.setSolver(new WordleBotSolver());
+        wordle.setSolver(new HeuristicSolver());
         Wordle.Result result = wordle.play("zzzzz");
         assertFalse(result.solved);
     }

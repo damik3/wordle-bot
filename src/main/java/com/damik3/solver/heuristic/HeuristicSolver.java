@@ -1,15 +1,15 @@
-package com.damik3.solver.wordlebot;
+package com.damik3.solver.heuristic;
 
 import com.damik3.Rules;
 import com.damik3.model.Guess;
 import com.damik3.model.Word;
 import com.damik3.solver.Solver;
-import com.damik3.solver.wordlebot.model.Stats;
+import com.damik3.solver.heuristic.model.Stats;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class WordleBotSolver implements Solver {
+public class HeuristicSolver implements Solver {
 
     @Override
     public String firstGuess(List<Word> words) {

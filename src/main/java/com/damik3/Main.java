@@ -1,7 +1,6 @@
 package com.damik3;
 
 import com.damik3.solver.entropy.EntropySolver;
-import com.damik3.solver.wordlebot.WordleBotSolver;
 
 import java.io.IOException;
 
@@ -11,7 +10,7 @@ public class Main {
         wordle.loadWords("words.txt");
         wordle.setSolver(new EntropySolver());
 
-        Wordle.Result result = wordle.play("orbit");
+        Wordle.Result result = wordle.play("poppy");
         System.out.println(result.solved ? "Wordle at " + result.steps + "!" : "Could not find solution...");
         System.out.println("Guesses: " + result.guesses);
         System.out.println("Possible solutions: " + result.numPossibleSolutions);

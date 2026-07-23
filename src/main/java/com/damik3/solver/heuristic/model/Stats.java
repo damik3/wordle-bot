@@ -1,4 +1,4 @@
-package com.damik3.solver.wordlebot.model;
+package com.damik3.solver.heuristic.model;
 
 import java.util.Objects;
 

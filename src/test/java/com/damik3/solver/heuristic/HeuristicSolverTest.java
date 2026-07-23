@@ -1,7 +1,7 @@
-package com.damik3.solver.wordlebot;
+package com.damik3.solver.heuristic;
 
 import com.damik3.model.Guess;
-import com.damik3.solver.wordlebot.model.Stats;
+import com.damik3.solver.heuristic.model.Stats;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -15,11 +15,11 @@ import static java.util.Map.entry;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class WordleBotSolverTest {
+public class HeuristicSolverTest {
 
     @Test
     void calculateNextBestGuess_shouldWork() {
-        WordleBotSolver wordleBotSolver = new WordleBotSolver();
+        HeuristicSolver heuristicSolver = new HeuristicSolver();
         Map<String, Stats> statsByWord = Map.ofEntries(
             entry("raise", new Stats(3, 1, 1.0)),
             entry("slate", new Stats(2, 2, 1.0)),
@@ -28,13 +28,13 @@ public class WordleBotSolverTest {
             entry("yippy", new Stats(3, 1, 0.0))
         );
 
-        String nextBestGuess = wordleBotSolver.calculateNextBestGuess(statsByWord);
+        String nextBestGuess = heuristicSolver.calculateNextBestGuess(statsByWord);
         assertTrue(Objects.equals(nextBestGuess, "raise") || Objects.equals(nextBestGuess, "parse"));
     }
 
     @Test
     void calculateStatsByWord_shouldWork() {
-        WordleBotSolver wordleBotSolver = new WordleBotSolver();
+        HeuristicSolver heuristicSolver = new HeuristicSolver();
 
         Map<String, Map<List<Guess.Result>, Integer>> patternCountsByWord = Map.ofEntries(
             entry("raise", Map.ofEntries(
@@ -62,7 +62,7 @@ public class WordleBotSolverTest {
         );
 
         List<String> possibleSolutions = List.of("raise", "slate", "parse");
-        Map<String, Stats> statsByWord = wordleBotSolver.calculateStatsByWord(possibleSolutions, patternCountsByWord);
+        Map<String, Stats> statsByWord = heuristicSolver.calculateStatsByWord(possibleSolutions, patternCountsByWord);
 
         Map<String, Stats> expectedStatsByWord = Map.ofEntries(
             entry("raise", new Stats(3, 1, 1.0)),
@@ -77,10 +77,10 @@ public class WordleBotSolverTest {
 
     @Test
     void calculatePatternCounts_shouldWork() {
-        WordleBotSolver wordleBotSolver = new WordleBotSolver();
+        HeuristicSolver heuristicSolver = new HeuristicSolver();
         List<String> words = List.of("raise", "slate", "parse", "bubby", "yippy");
         List<String> possibleSolutions = List.of("raise", "slate", "parse");
-        Map<String, Map<List<Guess.Result>, Integer>> patternCounts = wordleBotSolver.calculatePatternCounts(words, possibleSolutions);
+        Map<String, Map<List<Guess.Result>, Integer>> patternCounts = heuristicSolver.calculatePatternCounts(words, possibleSolutions);
 
         Map<List<Guess.Result>, Integer> expectedPatternCountsForRaise = Map.ofEntries(
             entry(List.of(CorrectPosition, CorrectPosition, CorrectPosition, CorrectPosition, CorrectPosition), 1),
