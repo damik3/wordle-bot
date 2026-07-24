@@ -22,6 +22,8 @@ public class EntropySolver implements Solver {
 
     @Override
     public String nextGuess(List<String> words, List<String> possibleSolutions) {
+        if (possibleSolutions.size() == 1 || possibleSolutions.size() == 2)
+            return possibleSolutions.get(0);
         Map<String, Map<List<Guess.Result>, Integer>> patternCountsByWord = calculatePatternCounts(words,
             possibleSolutions);
         Map<String, Entropy> entropyByWord = calculateEntropyByWord(new HashSet<>(possibleSolutions),

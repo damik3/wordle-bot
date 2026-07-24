@@ -5,8 +5,6 @@ import com.damik3.model.Guess;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class Rules {
@@ -33,31 +31,31 @@ public class Rules {
             throw new IllegalArgumentException("solutionWord is null");
         }
 
-        Map<Character, Long> consumed = solutionWord
-            .chars()
-            .mapToObj(c -> (char) c)
-            .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
+        int[] consumed = new int[26];
+        for (int i = 0; i < solutionWord.length(); i++) {
+            consumed[solutionWord.charAt(i) - 'a']++;
+        }
         List<Guess> result = new ArrayList<>();
 
         // Consume correct letters first
         for (int i = 0; i < solutionWord.length(); i++) {
-            Character solutionChar = solutionWord.charAt(i);
-            Character guessChar = guessWord.charAt(i);
-            if (solutionChar.equals(guessChar)) {
+            char solutionChar = solutionWord.charAt(i);
+            char guessChar = guessWord.charAt(i);
+            if (solutionChar == guessChar) {
                 result.add(new Guess(guessChar, i, Guess.Result.CorrectPosition));
-                consumed.put(guessChar, consumed.get(guessChar) - 1);
+                consumed[guessChar - 'a']--;
             }
         }
 
         // Consume wrong position and not existing letters second
         for (int i = 0; i < solutionWord.length(); i++) {
-            Character solutionChar = solutionWord.charAt(i);
-            Character guessChar = guessWord.charAt(i);
-            if (solutionChar.equals(guessChar)) {
+            char solutionChar = solutionWord.charAt(i);
+            char guessChar = guessWord.charAt(i);
+            if (solutionChar == guessChar) {
                 continue;
-            } else if (solutionWord.indexOf(guessChar) != -1 && consumed.get(guessChar) > 0) {
+            } else if (consumed[guessChar - 'a'] > 0) {
                 result.add(new Guess(guessChar, i, Guess.Result.WrongPosition));
-                consumed.put(guessChar, consumed.get(guessChar) - 1);
+                consumed[guessChar - 'a']--;
             } else {
                 result.add(new Guess(guessChar, i, Guess.Result.NotExists));
             }

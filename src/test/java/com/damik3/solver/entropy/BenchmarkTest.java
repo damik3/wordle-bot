@@ -20,6 +20,18 @@ public class BenchmarkTest {
      * Elapsed:    290.03s  (3.4 games/s)
      */
 
+    /**
+     * After calculate guess performance improvement
+     *
+     * === benchmark results ===
+     * Games:      1000
+     * Solved:     1000 (100.0%)
+     * Failed:     0
+     * Avg steps:  3.601  (min 2, max 6)
+     * Histogram:  2:18  3:426  4:495  5:59  6:2
+     * Elapsed:    144.98s  (6.9 games/s)
+     */
+
     @Test
     void runBenchmark() throws IOException {
         BenchmarkResults results = Benchmark.run(new EntropySolver());

@@ -7,7 +7,6 @@ import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 
-
 @Tag("benchmark")
 public class BenchmarkTest {
 
@@ -19,6 +18,18 @@ public class BenchmarkTest {
      * Avg steps:  3.591  (min 2, max 6)
      * Histogram:  2:19  3:440  4:473  5:67  6:1
      * Elapsed:    284.92s  (3.5 games/s)
+     */
+
+    /**
+     * After calculate guess performance improvement
+     * *
+     * === benchmark results ===
+     * Games:      1000
+     * Solved:     1000 (100.0%)
+     * Failed:     0
+     * Avg steps:  3.633  (min 2, max 6)
+     * Histogram:  2:18  3:401  4:513  5:66  6:2
+     * Elapsed:    144.21s  (6.9 games/s)
      */
 
     @Test
