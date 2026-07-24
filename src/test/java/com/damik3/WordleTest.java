@@ -1,43 +1,22 @@
 package com.damik3;
 
-import com.damik3.solver.heuristic.HeuristicSolver;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class WordleTest {
 
     @Test
     void Wordle_shouldParseWordsFile() throws IOException {
         Wordle wordle = new Wordle();
-        wordle.loadWords("words_10.txt");
+        wordle.loadWords("words_5.txt");
         List<String> words = wordle.validGuesses;
         List<String> possibleSolutions = wordle.possibleSolutions;
-        assertEquals(10, words.size());
-        assertEquals(7, possibleSolutions.size());
-    }
-
-    @Test
-    void play_shouldSolveSlate() throws IOException {
-        Wordle wordle = new Wordle();
-        wordle.loadWords("words.txt");
-        wordle.setSolver(new HeuristicSolver());
-        Wordle.Result result = wordle.play("slate");
-        assertTrue(result.solved);
-    }
-
-    @Test
-    void play_shouldNotThrowWhenThereAreNoPossibleSolutions() throws IOException {
-        Wordle wordle = new Wordle();
-        wordle.loadWords("words.txt");
-        wordle.setSolver(new HeuristicSolver());
-        Wordle.Result result = wordle.play("zzzzz");
-        assertFalse(result.solved);
+        assertEquals(5, words.size());
+        assertEquals(3, possibleSolutions.size());
     }
 
     //@Test

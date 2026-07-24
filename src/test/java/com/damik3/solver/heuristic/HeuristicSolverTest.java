@@ -1,9 +1,11 @@
 package com.damik3.solver.heuristic;
 
+import com.damik3.Wordle;
 import com.damik3.model.Guess;
 import com.damik3.solver.heuristic.model.Stats;
 import org.junit.jupiter.api.Test;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -13,9 +15,28 @@ import static com.damik3.model.Guess.Result.NotExists;
 import static com.damik3.model.Guess.Result.WrongPosition;
 import static java.util.Map.entry;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class HeuristicSolverTest {
+
+    @Test
+    void play_shouldSolveSlate() throws IOException {
+        Wordle wordle = new Wordle();
+        wordle.loadWords("words.txt");
+        wordle.setSolver(new HeuristicSolver());
+        Wordle.Result result = wordle.play("slate");
+        assertTrue(result.solved);
+    }
+
+    @Test
+    void play_shouldNotThrowWhenThereAreNoPossibleSolutions() throws IOException {
+        Wordle wordle = new Wordle();
+        wordle.loadWords("words.txt");
+        wordle.setSolver(new HeuristicSolver());
+        Wordle.Result result = wordle.play("zzzzz");
+        assertFalse(result.solved);
+    }
 
     @Test
     void calculateNextBestGuess_shouldWork() {
