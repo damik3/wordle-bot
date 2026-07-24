@@ -32,6 +32,18 @@ public class BenchmarkTest {
      * Elapsed:    144.21s  (6.9 games/s)
      */
 
+    /**
+     * After calculatePatternCounts stream to loop improvement
+     * *
+     * === benchmark results ===
+     * Games:      1000
+     * Solved:     1000 (100.0%)
+     * Failed:     0
+     * Avg steps:  3.601  (min 2, max 6)
+     * Histogram:  2:19  3:427  4:490  5:62  6:2
+     * Elapsed:    33.00s  (30.3 games/s)
+     */
+
     @Test
     void runBenchmark() throws IOException {
         BenchmarkResults results = Benchmark.run(new HeuristicSolver());

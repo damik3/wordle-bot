@@ -7,7 +7,6 @@ import com.damik3.solver.Solver;
 import com.damik3.solver.entropy.model.Entropy;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class EntropySolver implements Solver {
 
@@ -56,11 +55,11 @@ public class EntropySolver implements Solver {
         words.forEach(nextGuess -> {
             Map<List<Guess.Result>, Integer> patternCounts = new HashMap<>();
             possibleSolutions.forEach(possibleSolution -> {
-                List<Guess.Result> guessResults = Rules
-                    .calculateGuess(nextGuess, possibleSolution)
-                    .stream()
-                    .map(g -> g.guessResult)
-                    .collect(Collectors.toList());
+                List<Guess> guesses = Rules.calculateGuess(nextGuess, possibleSolution);
+                List<Guess.Result> guessResults = new ArrayList<>(guesses.size());
+                for (Guess g : guesses) {
+                    guessResults.add(g.guessResult);
+                }
                 patternCounts.merge(guessResults, 1, Integer::sum);
             });
             patternCountsByWord.put(nextGuess, patternCounts);

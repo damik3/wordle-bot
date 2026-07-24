@@ -15,20 +15,19 @@ public class Entropy {
     }
 
     public Entropy(Map<List<Guess.Result>, Integer> patternCounts, Double isPossibleSolution) {
-        int total = patternCounts
-            .values()
-            .stream()
-            .mapToInt(i -> i)
-            .sum();
-        this.entropy = patternCounts
-            .values()
-            .stream()
-            .mapToInt(i -> i)
-            .mapToDouble(i -> {
-                double p = (double) i / total;
-                return (-1) * p * Math.log(p) / Math.log(2.0);
-            })
-            .sum() + POSSIBLE_SOLUTION_BIAS * isPossibleSolution;
+        int total = 0;
+        double entropy = 0.0;
+
+        for (int patternCount : patternCounts.values()) {
+            total += patternCount;
+        }
+
+        for (int patternCount : patternCounts.values()) {
+            double p = (double) patternCount / total;
+            entropy += (-1) * p * Math.log(p) / Math.log(2.0);
+        }
+
+        this.entropy = entropy + POSSIBLE_SOLUTION_BIAS * isPossibleSolution;
     }
 
     @Override
