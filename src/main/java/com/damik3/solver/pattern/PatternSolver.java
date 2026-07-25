@@ -1,14 +1,16 @@
-package com.damik3.solver.entropy;
+package com.damik3.solver.pattern;
 
 import com.damik3.Rules;
 import com.damik3.model.Guess;
 import com.damik3.model.Word;
 import com.damik3.solver.Solver;
-import com.damik3.solver.entropy.model.Entropy;
 
 import java.util.*;
 
-public class EntropySolver implements Solver {
+public abstract class PatternSolver implements Solver {
+
+    protected abstract Map<String, Double> calculateScoreByWord(HashSet<String> possibleSolutions, Map<String,
+        Map<List<Guess.Result>, Integer>> patternCountsByWord);
 
     @Override
     public String firstGuess(List<Word> words) {
@@ -25,31 +27,20 @@ public class EntropySolver implements Solver {
             return possibleSolutions.get(0);
         Map<String, Map<List<Guess.Result>, Integer>> patternCountsByWord = calculatePatternCounts(words,
             possibleSolutions);
-        Map<String, Entropy> entropyByWord = calculateEntropyByWord(new HashSet<>(possibleSolutions),
-            patternCountsByWord);
-        return calculateNextBestGuess(entropyByWord);
+        Map<String, Double> statsByWord = calculateScoreByWord(new HashSet<>(possibleSolutions), patternCountsByWord);
+        return calculateNextBestGuess(statsByWord);
     }
 
-    String calculateNextBestGuess(Map<String, Entropy> entropyByWord) {
-        List<Map.Entry<String, Entropy>> entryList = new ArrayList<>(entropyByWord.entrySet());
+    public String calculateNextBestGuess(Map<String, Double> statsByWord) {
+        List<Map.Entry<String, Double>> entryList = new ArrayList<>(statsByWord.entrySet());
         return entryList
             .stream()
-            .max(Comparator.comparingDouble((Map.Entry<String, Entropy> e) -> e.getValue().entropy))
+            .max(Comparator.comparingDouble(Map.Entry::getValue))
             .map(Map.Entry::getKey)
             .orElse(null);
     }
 
-    Map<String, Entropy> calculateEntropyByWord(Set<String> possibleSolutions, Map<String, Map<List<Guess.Result>,
-        Integer>> patternCountsByWord) {
-        Map<String, Entropy> entropyByWord = new HashMap<>();
-        patternCountsByWord.forEach((s, patternCounts) -> {
-            Double isPossibleSolution = possibleSolutions.contains(s) ? 1.0 : 0;
-            entropyByWord.put(s, new Entropy(patternCounts, isPossibleSolution));
-        });
-        return entropyByWord;
-    }
-
-    Map<String, Map<List<Guess.Result>, Integer>> calculatePatternCounts(List<String> words,
+    public Map<String, Map<List<Guess.Result>, Integer>> calculatePatternCounts(List<String> words,
                                                                          List<String> possibleSolutions) {
         Map<String, Map<List<Guess.Result>, Integer>> patternCountsByWord = new HashMap<>();
         words.forEach(nextGuess -> {
@@ -66,4 +57,5 @@ public class EntropySolver implements Solver {
         });
         return patternCountsByWord;
     }
+
 }

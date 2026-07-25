@@ -1,4 +1,4 @@
-package com.damik3.solver.heuristic.model;
+package com.damik3.solver.pattern.heuristic.model;
 
 import java.util.Objects;
 

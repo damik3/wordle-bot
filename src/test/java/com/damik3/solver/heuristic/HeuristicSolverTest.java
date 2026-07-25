@@ -2,10 +2,12 @@ package com.damik3.solver.heuristic;
 
 import com.damik3.Wordle;
 import com.damik3.model.Guess;
-import com.damik3.solver.heuristic.model.Stats;
+import com.damik3.solver.pattern.heuristic.HeuristicSolver;
+import com.damik3.solver.pattern.heuristic.model.Stats;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -41,12 +43,12 @@ public class HeuristicSolverTest {
     @Test
     void calculateNextBestGuess_shouldWork() {
         HeuristicSolver heuristicSolver = new HeuristicSolver();
-        Map<String, Stats> statsByWord = Map.ofEntries(
-            entry("raise", new Stats(3, 1, 1.0)),
-            entry("slate", new Stats(2, 2, 1.0)),
-            entry("parse", new Stats(3, 1, 1.0)),
-            entry("bubby", new Stats(1, 3, 0.0)),
-            entry("yippy", new Stats(3, 1, 0.0))
+        Map<String, Double> statsByWord = Map.ofEntries(
+            entry("raise", new Stats(3, 1, 1.0).score),
+            entry("slate", new Stats(2, 2, 1.0).score),
+            entry("parse", new Stats(3, 1, 1.0).score),
+            entry("bubby", new Stats(1, 3, 0.0).score),
+            entry("yippy", new Stats(3, 1, 0.0).score)
         );
 
         String nextBestGuess = heuristicSolver.calculateNextBestGuess(statsByWord);
@@ -82,15 +84,15 @@ public class HeuristicSolverTest {
             ))
         );
 
-        List<String> possibleSolutions = List.of("raise", "slate", "parse");
-        Map<String, Stats> statsByWord = heuristicSolver.calculateStatsByWord(possibleSolutions, patternCountsByWord);
+        HashSet<String> possibleSolutions = new HashSet<>(List.of("raise", "slate", "parse"));
+        Map<String, Double> statsByWord = heuristicSolver.calculateScoreByWord(possibleSolutions, patternCountsByWord);
 
-        Map<String, Stats> expectedStatsByWord = Map.ofEntries(
-            entry("raise", new Stats(3, 1, 1.0)),
-            entry("slate", new Stats(2, 2, 1.0)),
-            entry("parse", new Stats(3, 1, 1.0)),
-            entry("bubby", new Stats(1, 3, 0.0)),
-            entry("yippy", new Stats(3, 1, 0.0))
+        Map<String, Double> expectedStatsByWord = Map.ofEntries(
+            entry("raise", new Stats(3, 1, 1.0).score),
+            entry("slate", new Stats(2, 2, 1.0).score),
+            entry("parse", new Stats(3, 1, 1.0).score),
+            entry("bubby", new Stats(1, 3, 0.0).score),
+            entry("yippy", new Stats(3, 1, 0.0).score)
         );
 
         assertEquals(expectedStatsByWord, statsByWord);

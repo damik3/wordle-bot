@@ -1,6 +1,6 @@
 package com.damik3;
 
-import com.damik3.solver.entropy.EntropySolver;
+import com.damik3.solver.pattern.entropy.EntropySolver;
 
 import java.io.IOException;
 

@@ -1,4 +1,4 @@
-package com.damik3.solver.entropy.model;
+package com.damik3.solver.pattern.entropy.model;
 
 import com.damik3.model.Guess;
 

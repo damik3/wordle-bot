@@ -2,7 +2,8 @@ package com.damik3.solver.entropy;
 
 import com.damik3.Wordle;
 import com.damik3.model.Guess;
-import com.damik3.solver.entropy.model.Entropy;
+import com.damik3.solver.pattern.entropy.EntropySolver;
+import com.damik3.solver.pattern.entropy.model.Entropy;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -42,15 +43,15 @@ public class EntropySolverTest {
     @Test
     void calculateNextBestGuess_shouldWork() {
         EntropySolver entropySolver = new EntropySolver();
-        Map<String, Entropy> entropyByWord = Map.ofEntries(
-            entry("raise", new Entropy(1.58496250072 + Entropy.POSSIBLE_SOLUTION_BIAS)),
-            entry("slate", new Entropy(0.91829583405 + Entropy.POSSIBLE_SOLUTION_BIAS)),
-            entry("parse", new Entropy(1.58496250072 + Entropy.POSSIBLE_SOLUTION_BIAS)),
-            entry("bubby", new Entropy(0d)),
-            entry("yippy", new Entropy(1.58496250072))
+        Map<String, Double> scoreByWord = Map.ofEntries(
+            entry("raise", 1.58496250072 + Entropy.POSSIBLE_SOLUTION_BIAS),
+            entry("slate", 0.91829583405 + Entropy.POSSIBLE_SOLUTION_BIAS),
+            entry("parse", 1.58496250072 + Entropy.POSSIBLE_SOLUTION_BIAS),
+            entry("bubby", 0.0),
+            entry("yippy", 1.58496250072)
         );
 
-        String nextBestGuess = entropySolver.calculateNextBestGuess(entropyByWord);
+        String nextBestGuess = entropySolver.calculateNextBestGuess(scoreByWord);
         assertTrue(Objects.equals(nextBestGuess, "raise") || Objects.equals(nextBestGuess, "parse"));
     }
 
@@ -84,21 +85,21 @@ public class EntropySolverTest {
         );
 
         List<String> possibleSolutions = List.of("raise", "slate", "parse");
-        Map<String, Entropy> entropyByWord = entropySolver.calculateEntropyByWord(new HashSet<>(possibleSolutions), patternCountsByWord);
+        Map<String, Double> entropyByWord = entropySolver.calculateScoreByWord(new HashSet<>(possibleSolutions), patternCountsByWord);
 
-        Map<String, Entropy> expectedEntropyByWord = Map.ofEntries(
-            entry("raise", new Entropy(1.58496250072 + Entropy.POSSIBLE_SOLUTION_BIAS)),
-            entry("slate", new Entropy(0.91829583405 + Entropy.POSSIBLE_SOLUTION_BIAS)),
-            entry("parse", new Entropy(1.58496250072 + Entropy.POSSIBLE_SOLUTION_BIAS)),
-            entry("bubby", new Entropy(0d)),
-            entry("yippy", new Entropy(1.58496250072))
+        Map<String, Double> expectedEntropyByWord = Map.ofEntries(
+            entry("raise", 1.58496250072 + Entropy.POSSIBLE_SOLUTION_BIAS),
+            entry("slate", 0.91829583405 + Entropy.POSSIBLE_SOLUTION_BIAS),
+            entry("parse", 1.58496250072 + Entropy.POSSIBLE_SOLUTION_BIAS),
+            entry("bubby", 0.0),
+            entry("yippy", 1.58496250072)
         );
 
         assertEquals(expectedEntropyByWord.size(), entropyByWord.size());
         assertEquals(expectedEntropyByWord.keySet(), entropyByWord.keySet());
         double EPS = 1e-9;
         expectedEntropyByWord.forEach((word, expected) ->
-            assertEquals(expected.entropy, entropyByWord.get(word).entropy, EPS, "word=" + word)
+            assertEquals(expected, entropyByWord.get(word), EPS, "word=" + word)
         );
     }
 
