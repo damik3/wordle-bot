@@ -31,7 +31,7 @@ public abstract class PatternSolver implements Solver {
         return calculateNextBestGuess(statsByWord);
     }
 
-    public String calculateNextBestGuess(Map<String, Double> statsByWord) {
+    static public String calculateNextBestGuess(Map<String, Double> statsByWord) {
         List<Map.Entry<String, Double>> entryList = new ArrayList<>(statsByWord.entrySet());
         return entryList
             .stream()
@@ -40,7 +40,7 @@ public abstract class PatternSolver implements Solver {
             .orElse(null);
     }
 
-    public Map<String, Map<List<Guess.Result>, Integer>> calculatePatternCounts(List<String> words,
+    static public Map<String, Map<List<Guess.Result>, Integer>> calculatePatternCounts(List<String> words,
                                                                          List<String> possibleSolutions) {
         Map<String, Map<List<Guess.Result>, Integer>> patternCountsByWord = new HashMap<>();
         words.forEach(nextGuess -> {

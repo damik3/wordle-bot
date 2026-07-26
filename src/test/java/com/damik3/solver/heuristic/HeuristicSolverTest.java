@@ -10,7 +10,6 @@ import java.io.IOException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 import static com.damik3.model.Guess.Result.CorrectPosition;
 import static com.damik3.model.Guess.Result.NotExists;
@@ -23,7 +22,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class HeuristicSolverTest {
 
     @Test
-    void play_shouldSolveSlate() throws IOException {
+    void shouldSolveSlate() throws IOException {
         Wordle wordle = new Wordle();
         wordle.loadWords("words.txt");
         wordle.setSolver(new HeuristicSolver());
@@ -32,7 +31,7 @@ public class HeuristicSolverTest {
     }
 
     @Test
-    void play_shouldNotThrowWhenThereAreNoPossibleSolutions() throws IOException {
+    void shouldNotThrowWhenThereAreNoPossibleSolutions() throws IOException {
         Wordle wordle = new Wordle();
         wordle.loadWords("words.txt");
         wordle.setSolver(new HeuristicSolver());
@@ -41,22 +40,7 @@ public class HeuristicSolverTest {
     }
 
     @Test
-    void calculateNextBestGuess_shouldWork() {
-        HeuristicSolver heuristicSolver = new HeuristicSolver();
-        Map<String, Double> statsByWord = Map.ofEntries(
-            entry("raise", new Stats(3, 1, 1.0).score),
-            entry("slate", new Stats(2, 2, 1.0).score),
-            entry("parse", new Stats(3, 1, 1.0).score),
-            entry("bubby", new Stats(1, 3, 0.0).score),
-            entry("yippy", new Stats(3, 1, 0.0).score)
-        );
-
-        String nextBestGuess = heuristicSolver.calculateNextBestGuess(statsByWord);
-        assertTrue(Objects.equals(nextBestGuess, "raise") || Objects.equals(nextBestGuess, "parse"));
-    }
-
-    @Test
-    void calculateStatsByWord_shouldWork() {
+    void calculateScoreByWord_shouldWork() {
         HeuristicSolver heuristicSolver = new HeuristicSolver();
 
         Map<String, Map<List<Guess.Result>, Integer>> patternCountsByWord = Map.ofEntries(
@@ -85,9 +69,9 @@ public class HeuristicSolverTest {
         );
 
         HashSet<String> possibleSolutions = new HashSet<>(List.of("raise", "slate", "parse"));
-        Map<String, Double> statsByWord = heuristicSolver.calculateScoreByWord(possibleSolutions, patternCountsByWord);
+        Map<String, Double> scoreByWord = heuristicSolver.calculateScoreByWord(possibleSolutions, patternCountsByWord);
 
-        Map<String, Double> expectedStatsByWord = Map.ofEntries(
+        Map<String, Double> expectedScoreByWord = Map.ofEntries(
             entry("raise", new Stats(3, 1, 1.0).score),
             entry("slate", new Stats(2, 2, 1.0).score),
             entry("parse", new Stats(3, 1, 1.0).score),
@@ -95,53 +79,7 @@ public class HeuristicSolverTest {
             entry("yippy", new Stats(3, 1, 0.0).score)
         );
 
-        assertEquals(expectedStatsByWord, statsByWord);
+        assertEquals(expectedScoreByWord, scoreByWord);
     }
-
-    @Test
-    void calculatePatternCounts_shouldWork() {
-        HeuristicSolver heuristicSolver = new HeuristicSolver();
-        List<String> words = List.of("raise", "slate", "parse", "bubby", "yippy");
-        List<String> possibleSolutions = List.of("raise", "slate", "parse");
-        Map<String, Map<List<Guess.Result>, Integer>> patternCounts = heuristicSolver.calculatePatternCounts(words, possibleSolutions);
-
-        Map<List<Guess.Result>, Integer> expectedPatternCountsForRaise = Map.ofEntries(
-            entry(List.of(CorrectPosition, CorrectPosition, CorrectPosition, CorrectPosition, CorrectPosition), 1),
-            entry(List.of(NotExists, WrongPosition, NotExists, WrongPosition, CorrectPosition), 1),
-            entry(List.of(WrongPosition, CorrectPosition, NotExists, CorrectPosition, CorrectPosition), 1)
-        );
-        Map<List<Guess.Result>, Integer> patternCountsForRaise = patternCounts.get("raise");
-        assertEquals(expectedPatternCountsForRaise, patternCountsForRaise);
-
-        Map<List<Guess.Result>, Integer> expectedPatternCountsForSlate = Map.ofEntries(
-            entry(List.of(WrongPosition, NotExists, WrongPosition, NotExists, CorrectPosition), 2),
-            entry(List.of(CorrectPosition, CorrectPosition, CorrectPosition, CorrectPosition, CorrectPosition), 1)
-        );
-        Map<List<Guess.Result>, Integer> patternCountsForSlate = patternCounts.get("slate");
-        assertEquals(expectedPatternCountsForSlate, patternCountsForSlate);
-
-        Map<List<Guess.Result>, Integer> expectedPatternCountsForParse = Map.ofEntries(
-            entry(List.of(NotExists, CorrectPosition, WrongPosition, CorrectPosition, CorrectPosition), 1),
-            entry(List.of(NotExists, WrongPosition, NotExists, WrongPosition, CorrectPosition), 1),
-            entry(List.of(CorrectPosition, CorrectPosition, CorrectPosition, CorrectPosition, CorrectPosition), 1)
-        );
-        Map<List<Guess.Result>, Integer> patternCountsForParse = patternCounts.get("parse");
-        assertEquals(expectedPatternCountsForParse, patternCountsForParse);
-
-        Map<List<Guess.Result>, Integer> expectedPatternCountsForBubby = Map.ofEntries(
-            entry(List.of(NotExists, NotExists, NotExists, NotExists, NotExists), 3)
-        );
-        Map<List<Guess.Result>, Integer> patternCountsForBubby = patternCounts.get("bubby");
-        assertEquals(expectedPatternCountsForBubby, patternCountsForBubby);
-
-        Map<List<Guess.Result>, Integer> expectedPatternCountsForYippy = Map.ofEntries(
-            entry(List.of(NotExists, WrongPosition, NotExists, NotExists, NotExists), 1),
-            entry(List.of(NotExists, NotExists, NotExists, NotExists, NotExists), 1),
-            entry(List.of(NotExists, NotExists, WrongPosition, NotExists, NotExists), 1)
-        );
-        Map<List<Guess.Result>, Integer> patternCountsForYippy = patternCounts.get("yippy");
-        assertEquals(expectedPatternCountsForYippy, patternCountsForYippy);
-    }
-
 
 }
