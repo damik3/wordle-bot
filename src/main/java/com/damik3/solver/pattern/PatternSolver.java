@@ -9,8 +9,7 @@ import java.util.*;
 
 public abstract class PatternSolver implements Solver {
 
-    protected abstract Map<String, Double> calculateScoreByWord(HashSet<String> possibleSolutions, Map<String,
-        Map<List<Guess.Result>, Integer>> patternCountsByWord);
+    public abstract Double getScore(Map<List<Guess.Result>, Integer> patternCounts, Boolean isPossibleSolution);
 
     @Override
     public String firstGuess(List<Word> words) {
@@ -38,6 +37,19 @@ public abstract class PatternSolver implements Solver {
             .max(Comparator.comparingDouble(Map.Entry::getValue))
             .map(Map.Entry::getKey)
             .orElse(null);
+    }
+
+    public Map<String, Double> calculateScoreByWord(
+        HashSet<String> possibleSolutions,
+        Map<String, Map<List<Guess.Result>, Integer>> patternCountsByWord
+    ) {
+        Map<String, Double> entropyByWord = new HashMap<>();
+        patternCountsByWord.forEach((s, patternCounts) -> {
+            Boolean isPossibleSolution = possibleSolutions.contains(s);
+            Double score = getScore(patternCounts, isPossibleSolution);
+            entropyByWord.put(s, score);
+        });
+        return entropyByWord;
     }
 
     static public Map<String, Map<List<Guess.Result>, Integer>> calculatePatternCounts(List<String> words,

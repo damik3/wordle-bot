@@ -1,8 +1,7 @@
-package com.damik3.solver.minmax;
+package com.damik3.solver.pattern.minmax;
 
 import com.damik3.solver.Benchmark;
 import com.damik3.solver.BenchmarkResults;
-import com.damik3.solver.pattern.minmax.MinmaxSolver;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 

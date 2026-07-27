@@ -1,11 +1,10 @@
-package com.damik3.solver.minmax;
+package com.damik3.solver.pattern.minmax;
 
-import com.damik3.Wordle;
 import com.damik3.model.Guess;
-import com.damik3.solver.pattern.minmax.MinmaxSolver;
+import com.damik3.solver.Solver;
+import com.damik3.solver.pattern.PatternSolverTestBase;
 import org.junit.jupiter.api.Test;
 
-import java.io.IOException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -15,27 +14,12 @@ import static com.damik3.model.Guess.Result.NotExists;
 import static com.damik3.model.Guess.Result.WrongPosition;
 import static java.util.Map.entry;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class MinmaxSolverTest {
+public class MinmaxSolverTest extends PatternSolverTestBase {
 
-    @Test
-    void shouldSolveSlate() throws IOException {
-        Wordle wordle = new Wordle();
-        wordle.loadWords("words.txt");
-        wordle.setSolver(new MinmaxSolver());
-        Wordle.Result result = wordle.play("slate");
-        assertTrue(result.solved);
-    }
-
-    @Test
-    void shouldNotThrowWhenThereAreNoPossibleSolutions() throws IOException {
-        Wordle wordle = new Wordle();
-        wordle.loadWords("words.txt");
-        wordle.setSolver(new MinmaxSolver());
-        Wordle.Result result = wordle.play("zzzzz");
-        assertFalse(result.solved);
+    @Override
+    protected Solver newSolver() {
+        return new MinmaxSolver();
     }
 
     @Test
@@ -71,9 +55,9 @@ public class MinmaxSolverTest {
         Map<String, Double> scoreByWord = minmaxSolver.calculateScoreByWord(new HashSet<>(possibleSolutions), patternCountsByWord);
 
         Map<String, Double> expectedScoreByWord = Map.ofEntries(
-            entry("raise", 0.0),
-            entry("slate", -1.0),
-            entry("parse", 0.0),
+            entry("raise", -0.5),
+            entry("slate", -1.5),
+            entry("parse", -0.5),
             entry("bubby", -3.0),
             entry("yippy", -1.0)
         );

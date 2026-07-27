@@ -2,24 +2,29 @@ package com.damik3.solver.pattern.entropy;
 
 import com.damik3.model.Guess;
 import com.damik3.solver.pattern.PatternSolver;
-import com.damik3.solver.pattern.entropy.model.Entropy;
 
 import java.util.*;
 
 public class EntropySolver extends PatternSolver {
+    public static final double POSSIBLE_SOLUTION_BIAS = 0.02;
 
     @Override
-    public Map<String, Double> calculateScoreByWord(
-            HashSet<String> possibleSolutions,
-            Map<String, Map<List<Guess.Result>, Integer>> patternCountsByWord
-    ) {
-        Map<String, Double> entropyByWord = new HashMap<>();
-        patternCountsByWord.forEach((s, patternCounts) -> {
-            Double isPossibleSolution = possibleSolutions.contains(s) ? 1.0 : 0;
-            Entropy entropy = new Entropy(patternCounts, isPossibleSolution);
-            entropyByWord.put(s, entropy.entropy);
-        });
-        return entropyByWord;
+    public Double getScore(Map<List<Guess.Result>, Integer> patternCounts, Boolean isPossibleSolution) {
+        int total = 0;
+        double entropy = 0.0;
+
+        for (int patternCount : patternCounts.values()) {
+            total += patternCount;
+        }
+
+        for (int patternCount : patternCounts.values()) {
+            double p = (double) patternCount / total;
+            entropy += (-1) * p * Math.log(p) / Math.log(2.0);
+        }
+
+        entropy += isPossibleSolution ? POSSIBLE_SOLUTION_BIAS : 0;
+
+        return entropy;
     }
 
 }

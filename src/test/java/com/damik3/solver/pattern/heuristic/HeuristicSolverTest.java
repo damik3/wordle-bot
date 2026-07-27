@@ -1,12 +1,10 @@
-package com.damik3.solver.entropy;
+package com.damik3.solver.pattern.heuristic;
 
-import com.damik3.Wordle;
 import com.damik3.model.Guess;
-import com.damik3.solver.pattern.entropy.EntropySolver;
-import com.damik3.solver.pattern.entropy.model.Entropy;
+import com.damik3.solver.Solver;
+import com.damik3.solver.pattern.PatternSolverTestBase;
 import org.junit.jupiter.api.Test;
 
-import java.io.IOException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -16,32 +14,17 @@ import static com.damik3.model.Guess.Result.NotExists;
 import static com.damik3.model.Guess.Result.WrongPosition;
 import static java.util.Map.entry;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class EntropySolverTest {
+public class HeuristicSolverTest extends PatternSolverTestBase {
 
-    @Test
-    void shouldSolveSlate() throws IOException {
-        Wordle wordle = new Wordle();
-        wordle.loadWords("words.txt");
-        wordle.setSolver(new EntropySolver());
-        Wordle.Result result = wordle.play("slate");
-        assertTrue(result.solved);
-    }
-
-    @Test
-    void shouldNotThrowWhenThereAreNoPossibleSolutions() throws IOException {
-        Wordle wordle = new Wordle();
-        wordle.loadWords("words.txt");
-        wordle.setSolver(new EntropySolver());
-        Wordle.Result result = wordle.play("zzzzz");
-        assertFalse(result.solved);
+    @Override
+    protected Solver newSolver() {
+        return new HeuristicSolver();
     }
 
     @Test
     void calculateScoreByWord_shouldWork() {
-        EntropySolver entropySolver = new EntropySolver();
+        HeuristicSolver heuristicSolver = new HeuristicSolver();
 
         Map<String, Map<List<Guess.Result>, Integer>> patternCountsByWord = Map.ofEntries(
             entry("raise", Map.ofEntries(
@@ -68,23 +51,18 @@ public class EntropySolverTest {
             ))
         );
 
-        List<String> possibleSolutions = List.of("raise", "slate", "parse");
-        Map<String, Double> scoreByWord = entropySolver.calculateScoreByWord(new HashSet<>(possibleSolutions), patternCountsByWord);
+        HashSet<String> possibleSolutions = new HashSet<>(List.of("raise", "slate", "parse"));
+        Map<String, Double> scoreByWord = heuristicSolver.calculateScoreByWord(possibleSolutions, patternCountsByWord);
 
         Map<String, Double> expectedScoreByWord = Map.ofEntries(
-            entry("raise", 1.58496250072 + Entropy.POSSIBLE_SOLUTION_BIAS),
-            entry("slate", 0.91829583405 + Entropy.POSSIBLE_SOLUTION_BIAS),
-            entry("parse", 1.58496250072 + Entropy.POSSIBLE_SOLUTION_BIAS),
-            entry("bubby", 0.0),
-            entry("yippy", 1.58496250072)
+            entry("raise", 3 - 1 + HeuristicSolver.POSSIBLE_SOLUTION_BIAS),
+            entry("slate", 2 - 2 + HeuristicSolver.POSSIBLE_SOLUTION_BIAS),
+            entry("parse", 3 - 1 + HeuristicSolver.POSSIBLE_SOLUTION_BIAS),
+            entry("bubby", 1 - 3 + 0.0),
+            entry("yippy", 3 - 1 + 0.0)
         );
 
-        assertEquals(expectedScoreByWord.size(), scoreByWord.size());
-        assertEquals(expectedScoreByWord.keySet(), scoreByWord.keySet());
-        double EPS = 1e-9;
-        expectedScoreByWord.forEach((word, expected) ->
-            assertEquals(expected, scoreByWord.get(word), EPS, "word=" + word)
-        );
+        assertEquals(expectedScoreByWord, scoreByWord);
     }
 
 }

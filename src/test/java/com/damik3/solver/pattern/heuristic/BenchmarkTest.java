@@ -1,8 +1,7 @@
-package com.damik3.solver.heuristic;
+package com.damik3.solver.pattern.heuristic;
 
 import com.damik3.solver.Benchmark;
 import com.damik3.solver.BenchmarkResults;
-import com.damik3.solver.pattern.heuristic.HeuristicSolver;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 

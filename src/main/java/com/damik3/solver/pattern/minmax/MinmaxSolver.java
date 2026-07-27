@@ -6,24 +6,15 @@ import com.damik3.solver.pattern.PatternSolver;
 import java.util.*;
 
 public class MinmaxSolver extends PatternSolver {
+    public static final double POSSIBLE_SOLUTION_BIAS = 0.5;
 
     @Override
-    public Map<String, Double> calculateScoreByWord(
-        HashSet<String> possibleSolutions, Map<String,
-        Map<List<Guess.Result>, Integer>> patternCountsByWord
-    ) {
-        Map<String, Double> scoreByWord = new HashMap<>();
-        patternCountsByWord.forEach((s, patternCounts) -> {
-            int largestGroup = patternCounts
-                .values()
-                .stream()
-                .max(Comparator.comparingInt(i -> i))
-                .orElse(0);
-            double isPossibleSolution = possibleSolutions.contains(s) ? 0.5 : 0;
-            Double score = (-1.0) * largestGroup + isPossibleSolution;
-            scoreByWord.put(s, score);
-        });
-        return scoreByWord;
+    public Double getScore(Map<List<Guess.Result>, Integer> patternCounts, Boolean isPossibleSolution) {
+        int largestGroup = 0;
+        for (int count: patternCounts.values())
+            if (count > largestGroup)
+                largestGroup = count;
+        return (-1) * largestGroup + (isPossibleSolution ? POSSIBLE_SOLUTION_BIAS : 0);
     }
 
 }

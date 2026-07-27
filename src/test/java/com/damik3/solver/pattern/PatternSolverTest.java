@@ -1,7 +1,6 @@
-package com.damik3.solver;
+package com.damik3.solver.pattern;
 
 import com.damik3.model.Guess;
-import com.damik3.solver.pattern.PatternSolver;
 import com.damik3.solver.pattern.heuristic.HeuristicSolver;
 import org.junit.jupiter.api.Test;
 

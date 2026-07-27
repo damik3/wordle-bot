@@ -1,8 +1,7 @@
-package com.damik3.solver.entropy;
+package com.damik3.solver.pattern.entropy;
 
 import com.damik3.solver.Benchmark;
 import com.damik3.solver.BenchmarkResults;
-import com.damik3.solver.pattern.entropy.EntropySolver;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
