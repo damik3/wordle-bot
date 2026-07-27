@@ -1,37 +1,18 @@
 package com.damik3;
 
+import com.damik3.solver.pattern.entropy.EntropySolver;
+
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
 
 public class Main {
     public static void main(String[] args) throws IOException {
-        String wordle = "adieu";
-        GameResult result = play(wordle);
-        if (result.solved)
-            System.out.println("Wordle at " + result.steps + "!");
-        else
-            System.out.println("Could not find solution...");
-    }
+        Wordle wordle = new Wordle();
+        wordle.loadWords("words.txt");
+        wordle.setSolver(new EntropySolver());
 
-    static GameResult play(String wordle) throws IOException {
-        int maxNumberOfGuesses = 6;
-        WordleBot bot = new WordleBot("words.txt");
-
-        int attempt = 0;
-        String guess = null;
-        List<LetterGuess> previousGuessResult = new ArrayList<>();
-
-        while (attempt < maxNumberOfGuesses && !Objects.equals(guess, wordle)) {
-            guess = bot.nextGuess(previousGuessResult);
-            System.out.println("Guess: " + guess);
-            previousGuessResult = bot.calculateLetterGuess(guess, wordle);
-            System.out.println("previousGuessResult: " + previousGuessResult);
-            attempt++;
-        }
-
-        boolean solved = Objects.equals(guess, wordle);
-        return new GameResult(solved, attempt);
+        Wordle.Result result = wordle.play("poppy");
+        System.out.println(result.solved ? "Wordle at " + result.steps + "!" : "Could not find solution...");
+        System.out.println("Guesses: " + result.guesses);
+        System.out.println("Possible solutions: " + result.numPossibleSolutions);
     }
 }
