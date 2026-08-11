@@ -10,6 +10,18 @@ A pluggable Wordle solver framework in Java 11 with three competing strategies: 
 - **Maven build**: Compile, test, and package with standard Maven commands
 - **Benchmark support**: Built-in harness for multi-run performance analysis
 
+## Benchmark Results
+
+Latest benchmark results over a seeded sample of 1000 games (seed `42L`), run with `calculatePatternCounts` stream-to-loop optimisation:
+
+| Solver    | Games | Solved      | Avg Steps | Min | Max | Histogram                        | Elapsed  | Throughput   |
+|-----------|-------|-------------|-----------|-----|-----|----------------------------------|----------|--------------|
+| Entropy   | 1000  | 1000 (100%) | 3.602     | 2   | 6   | 2:18  3:426  4:494  5:60  6:2   | 39.10s   | 25.6 games/s |
+| Heuristic | 1000  | 1000 (100%) | 3.601     | 2   | 6   | 2:19  3:427  4:490  5:62  6:2   | 33.00s   | 30.3 games/s |
+| Minmax    | 1000  | 1000 (100%) | 3.672     | 2   | 6   | 2:19  3:376  4:522  5:80  6:3   | 34.25s   | 29.2 games/s |
+
+All three solvers achieved a **100% solve rate** within 6 guesses. Entropy and Heuristic are nearly tied on average steps (~3.60), while Minmax is slightly weaker (~3.67). Heuristic is the fastest solver by throughput.
+
 ## Quick Start
 
 ### Build
