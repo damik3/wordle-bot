@@ -26,8 +26,8 @@ public abstract class PatternSolver implements Solver {
             return possibleSolutions.get(0);
         Map<String, Map<List<Guess.Result>, Integer>> patternCountsByWord = calculatePatternCounts(words,
             possibleSolutions);
-        Map<String, Double> statsByWord = calculateScoreByWord(new HashSet<>(possibleSolutions), patternCountsByWord);
-        return calculateNextBestGuess(statsByWord);
+        Map<String, Double> scoreByWord = calculateScoreByWord(new HashSet<>(possibleSolutions), patternCountsByWord);
+        return calculateNextBestGuess(scoreByWord);
     }
 
     static public String calculateNextBestGuess(Map<String, Double> statsByWord) {
@@ -43,13 +43,13 @@ public abstract class PatternSolver implements Solver {
         HashSet<String> possibleSolutions,
         Map<String, Map<List<Guess.Result>, Integer>> patternCountsByWord
     ) {
-        Map<String, Double> entropyByWord = new HashMap<>();
+        Map<String, Double> scoreByWord = new HashMap<>();
         patternCountsByWord.forEach((s, patternCounts) -> {
             Boolean isPossibleSolution = possibleSolutions.contains(s);
             Double score = getScore(patternCounts, isPossibleSolution);
-            entropyByWord.put(s, score);
+            scoreByWord.put(s, score);
         });
-        return entropyByWord;
+        return scoreByWord;
     }
 
     static public Map<String, Map<List<Guess.Result>, Integer>> calculatePatternCounts(List<String> words,
